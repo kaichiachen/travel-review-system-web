@@ -1,4 +1,3 @@
-import store from '@/store';
 import baseUrl from './env';
 
 export default async (router = '', data = {}, method = 'GET', type = 'json') => {
@@ -6,9 +5,6 @@ export default async (router = '', data = {}, method = 'GET', type = 'json') => 
   const reqUrl = baseUrl + router;
   const requestConfig = {
     method: reqMethod,
-    headers: {
-      Authorization: 'Bearer '.concat(store.getters.token),
-    },
   };
   if (type === 'json') {
     Object.defineProperty(requestConfig, 'Content-Type', {
@@ -22,15 +18,6 @@ export default async (router = '', data = {}, method = 'GET', type = 'json') => 
     }
   }
 
-  if (type === 'form-data') {
-    const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key]);
-    });
-    Object.defineProperty(requestConfig, 'body', {
-      value: formData,
-    });
-  }
   let responseJson = {};
   let response;
   try {

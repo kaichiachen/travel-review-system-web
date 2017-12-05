@@ -56,7 +56,7 @@ import { mapState, mapMutations } from 'vuex';
 export default {
   data() {
     return {
-      title: 'Travel Review System',
+      title: '旅游游记评论系统',
       userName: '',
       userCompanyName: '',
       userRoleID: 0,

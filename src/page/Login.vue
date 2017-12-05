@@ -5,7 +5,7 @@
         <form novalidate @submit.stop.prevent="submit">
         <md-input-container>
             <label>账号: </label>
-            <md-input v-model="email"></md-input>
+            <md-input v-model="username"></md-input>
         </md-input-container>
         <md-input-container>
             <label>密码: </label>
@@ -19,6 +19,7 @@
 
 <script>
 import { mapMutations } from 'vuex';
+import { loginReq } from '@/service';
 import snackbar from '@/components/SnackBar';
 
 export default {
@@ -39,10 +40,28 @@ export default {
       'RECORD_USERINFO',
     ]),
     login() {
-      this.RECORD_USERINFO({
-        login: true,
+      if (this.username == null || this.pwd == null) {
+        this.$refs.snackbar.msg = '账号或密码不能为空！';
+        this.$refs.snackbar.open();
+        return;
+      }
+
+      loginReq(this.username, this.pwd).then((success) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        // console.debug(success.User);
+        if (success.User !== undefined && success.User.length === 1) {
+          this.RECORD_USERINFO({
+            login: true,
+          });
+          this.$emit('closeDialog', 'accepted');
+        } else {
+          this.$refs.snackbar.msg = '账号或密码错误！';
+          this.$refs.snackbar.open();
+        }
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
       });
-      this.$emit('closeDialog', 'accepted');
     },
   },
 };
