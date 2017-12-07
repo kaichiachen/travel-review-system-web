@@ -22,12 +22,12 @@
         </md-card-header>
 
         <md-card-actions>
-          <md-button v-on:click.native="logout">Logout</md-button>
+          <md-button v-on:click.native="logout">登出</md-button>
         </md-card-actions>
       </md-card>
     <md-toolbar class="md-large" v-if="!this.login">
       <div class="md-toolbar-container">
-        <h3 class="md-title">Welcome!</h3>
+        <h3 class="md-title">欢迎光临!</h3>
       </div>
     </md-toolbar>
     <div class="phone-viewport">
@@ -86,8 +86,12 @@ export default {
   },
   watch: {
     userInfo: function userInfo() {
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.userInfo);
       if (this.userInfo != null && typeof (this.userInfo) === typeof ('String')) {
         this.userinfo = JSON.parse(this.userInfo);
+      } else if (this.userInfo != null && typeof (this.userInfo) === typeof ({})) {
+        this.userinfo = this.userInfo;
       }
     },
   },

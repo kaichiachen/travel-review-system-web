@@ -2,15 +2,15 @@
   <div class="homeviewvontroller">
     <md-boards :md-auto="true" :md-infinite="true" :md-duration="5000" :md-swipeable="true">
       <md-board id="slide1" class="onboard">
-        <p class="board_des">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+        <p class="board_des">枫红了愁绪，秋冷了回忆，古镇老墙添绿，又一年过去</p>
       </md-board>
 
       <md-board id="slide2" class="onboard">
-        <p class="board_des">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+        <p class="board_des">月光浸透，寒风里微颤抖，古老的记忆，依然不断的寻觅</p>
       </md-board>
 
       <md-board id="slide3" class="onboard">
-        <p class="board_des">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dolorum quas amet cum vitae, omnis! Illum quas voluptatem, expedita iste, dicta ipsum ea veniam dolore in, quod saepe reiciendis nihil.</p>
+        <p class="board_des">相信爱一天，抵过永远，在这一霎那冻结了时间</p>
       </md-board>
     </md-boards>
     <div class="card">
@@ -60,13 +60,13 @@
       </md-card>
     </div>
 
-    <div class="user" v-if="!this.login">
+    <div class="user">
       <router-link to="/login">
-        <md-button class="md-raised md-primary user-btn" @click="openDialog('dialog', 'login')">
+        <md-button class="md-raised md-primary user-btn" @click="openDialog('dialog', 'login')" v-if="!this.login">
           登入
         </md-button>
       </router-link>
-      <md-button class="md-raised md-primary user-btn" @click="openDialog('dialog', 'register')">
+      <md-button class="md-raised md-primary user-btn" @click="openDialog('dialog', 'register')" v-if="!this.login">
         注册
       </md-button>
     </div>
@@ -104,12 +104,12 @@ export default {
     ]),
   },
   mounted() {
-    // TODO: cannot openDialog on mounted
-    if (this.$router.history.current.path === '/login') {
-      this.openDialog('dialog', 'login');
-    } else if (this.$router.history.current.path === '/register') {
-      this.openDialog('dialog', 'register');
-    }
+    // TODO: fix bugs cannot openDialog on mounted
+    // if (this.$router.history.current.path === '/login') {
+    //   this.openDialog('dialog', 'login');
+    // } else if (this.$router.history.current.path === '/register') {
+    //   this.openDialog('dialog', 'register');
+    // }
   },
   methods: {
     openDialog(ref, type) {
@@ -137,10 +137,18 @@ export default {
       }
     },
     linkToReview() {
-
+      if (this.login) {
+        this.$router.push('/review/new');
+      } else {
+        this.openDialog('dialog', 'login');
+      }
     },
     linkToPost() {
-
+      if (this.login) {
+        this.$router.push('/post/new');
+      } else {
+        this.openDialog('dialog', 'login');
+      }
     },
   },
 };
@@ -153,15 +161,18 @@ export default {
 }
 
 .onboard {
-  height: 300px;
+  height: 400px;
   margin:0;
+  text-align: center;
 }
 
 .board_des {
-  position: absolute;
-  bottom: 10px;
+  margin: 0 auto;
+  display: block;
   color: white;
-  text-align: center;
+  padding-top:350px;
+  font-size: 15pt;
+  line-height: 20pt;
 }
 
 .card {
@@ -191,14 +202,20 @@ export default {
 
 #slide1 {
   background-image: url("../assets/home/home_1.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 #slide2 {
   background-image: url("../assets/home/home_2.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 #slide3 {
-  background-image: url("../assets/home/home_1.png");
+  background-image: url("../assets/home/home_3.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 a {

@@ -5,6 +5,7 @@ import Hello from '@/components/Hello';
 import Login from '@/page/Login';
 import Register from '@/page/Register';
 import Post from '@/page/Post';
+import Review from '@/page/Review';
 
 Vue.use(Router);
 
@@ -34,6 +35,10 @@ export default new Router({
       {
         path: '/posts',
         component: Post,
+      },
+      {
+        path: '/reviews',
+        component: Review,
       },
     ],
   }],
