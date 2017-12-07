@@ -25,7 +25,7 @@
         </md-card-content>
 
         <md-card-actions>
-          <md-button class="md-raised md-accent">马上去！</md-button>
+          <md-button class="md-raised md-accent" @click="linkToPost">马上去！</md-button>
         </md-card-actions>
       </md-card>
 
@@ -40,7 +40,7 @@
         </md-card-content>
 
         <md-card-actions>
-          <md-button class="md-raised md-accent">马上去！</md-button>
+          <md-button class="md-raised md-accent" @click="linkToReview">马上去！</md-button>
         </md-card-actions>
       </md-card>
 
@@ -55,12 +55,12 @@
         </md-card-content>
 
         <md-card-actions>
-          <md-button class="md-raised md-accent">马上去！</md-button>
+          <md-button class="md-raised md-accent" @click="linkToPostList">马上去！</md-button>
         </md-card-actions>
       </md-card>
     </div>
 
-    <div class="user">
+    <div class="user" v-if="!this.login">
       <router-link to="/login">
         <md-button class="md-raised md-primary user-btn" @click="openDialog('dialog', 'login')">
           登入
@@ -73,8 +73,8 @@
 
     <md-dialog md-open-from="#custom" md-close-to="#custom" ref="dialog">
       <md-dialog-content class='dialogcontent'>
-        <login v-on:closeDialog="loginEventEmitted" v-if="this.type==='login'"></login>
-        <register v-on:closeDialog="registerEventEmitted" v-if="this.type==='register'"></register>
+        <loginview v-on:closeDialog="loginEventEmitted" v-if="this.type==='login'"></loginview>
+        <registerview v-on:closeDialog="registerEventEmitted" v-if="this.type==='register'"></registerview>
       </md-dialog-content>
     </md-dialog>
   </div>
@@ -82,9 +82,9 @@
 </template>
 
 <script>
-
-import login from '@/page/Login';
-import register from '@/page/Register';
+import { mapState } from 'vuex';
+import loginview from '@/page/Login';
+import registerview from '@/page/Register';
 
 export default {
   name: 'hello',
@@ -94,8 +94,22 @@ export default {
     };
   },
   components: {
-    login,
-    register,
+    loginview,
+    registerview,
+  },
+  computed: {
+    ...mapState([
+      'userInfo',
+      'login',
+    ]),
+  },
+  mounted() {
+    // TODO: cannot openDialog on mounted
+    if (this.$router.history.current.path === '/login') {
+      this.openDialog('dialog', 'login');
+    } else if (this.$router.history.current.path === '/register') {
+      this.openDialog('dialog', 'register');
+    }
   },
   methods: {
     openDialog(ref, type) {
@@ -115,12 +129,19 @@ export default {
         this.closeDialog('dialog');
       }
     },
-    // onOpen() {
-    //   console.log('Opened');
-    // },
-    // onClose(type) {
-    //   console.log('Closed', type);
-    // },
+    linkToPostList() {
+      if (this.login) {
+        this.$router.push('/posts');
+      } else {
+        this.openDialog('dialog', 'login');
+      }
+    },
+    linkToReview() {
+
+    },
+    linkToPost() {
+
+    },
   },
 };
 </script>

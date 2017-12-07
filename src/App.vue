@@ -8,12 +8,25 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+import store from '@/store';
 import navbar from '@/components/Head';
 
 export default {
   name: 'app',
   components: {
     navbar,
+  },
+  mounted() {
+    const info = store.getters.userInfo;
+    if (info !== 'null') {
+      this.RECORD_USERINFO(store.getters.userInfo);
+    }
+  },
+  methods: {
+    ...mapMutations([
+      'RECORD_USERINFO',
+    ]),
   },
 };
 </script>

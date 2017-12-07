@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import App from '@/App';
 import Hello from '@/components/Hello';
 import Login from '@/page/Login';
+import Register from '@/page/Register';
 import Post from '@/page/Post';
 
 Vue.use(Router);
@@ -26,7 +27,7 @@ export default new Router({
           },
           {
             path: '/register',
-            component: Login,
+            component: Register,
           },
         ],
       },

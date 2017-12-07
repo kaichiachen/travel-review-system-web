@@ -12,8 +12,8 @@
       <md-card v-if="this.login">
         <md-card-header>
           <md-card-header-text>
-            <div class="md-title">{{ userName }}</div>
-            <div class="md-subhead">{{ userCompanyName }}</div>
+            <div class="md-title">{{ this.userinfo.name }}</div>
+            <div class="md-subhead">{{ this.userinfo.name }}</div>
           </md-card-header-text>
 
           <md-card-media>
@@ -34,13 +34,13 @@
       <md-list>
         <md-list-item>
           <router-link to="/home" v-on:click.native="toggleLeftSidenav">
-            <md-icon>home</md-icon> <span>Home</span>
+            <md-icon>home</md-icon> <span>首页</span>
           </router-link>
         </md-list-item>
 
         <md-list-item v-if="this.login">
           <router-link to="/posts" v-on:click.native="toggleLeftSidenav">
-            <md-icon>people</md-icon> <span>Post</span>
+            <md-icon>people</md-icon> <span>查阅文章</span>
           </router-link>
         </md-list-item>
       </md-list>
@@ -57,9 +57,11 @@ export default {
   data() {
     return {
       title: '旅游游记评论系统',
-      userName: '',
-      userCompanyName: '',
       userRoleID: 0,
+      userinfo: {
+        name: '',
+        username: '',
+      },
     };
   },
   computed: {
@@ -80,6 +82,13 @@ export default {
       this.OUT_LOGIN();
       this.$router.push({ path: '/home' });
       this.$refs.leftSidenav.toggle();
+    },
+  },
+  watch: {
+    userInfo: function userInfo() {
+      if (this.userInfo != null && typeof (this.userInfo) === typeof ('String')) {
+        this.userinfo = JSON.parse(this.userInfo);
+      }
     },
   },
 };

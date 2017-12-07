@@ -11,11 +11,8 @@ const state = {
 };
 
 const getters = {
-  login: () => {
-    if (state.login === null || state.login === false) {
-      return getStore('token');
-    }
-    return state.login;
+  userInfo: () => {
+    return getStore('userInfo');
   },
 };
 

@@ -25,11 +25,9 @@ import snackbar from '@/components/SnackBar';
 export default {
   data() {
     return {
+      userInfo: null,
       username: null,
       pwd: null,
-      name: null,
-      roleid: null,
-      userInfo: null,
     };
   },
   components: {
@@ -40,6 +38,8 @@ export default {
       'RECORD_USERINFO',
     ]),
     login() {
+      this.username = 'male';
+      this.pwd = '27';
       if (this.username == null || this.pwd == null) {
         this.$refs.snackbar.msg = '账号或密码不能为空！';
         this.$refs.snackbar.open();
@@ -50,10 +50,13 @@ export default {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         // console.debug(success.User);
         if (success.User !== undefined && success.User.length === 1) {
-          this.RECORD_USERINFO({
-            login: true,
-          });
+          this.userInfo = {
+            name: success.User[0].name,
+            username: this.username,
+          };
+          this.RECORD_USERINFO(this.userInfo);
           this.$emit('closeDialog', 'accepted');
+          // this.$router.push({ path: '/home' });
         } else {
           this.$refs.snackbar.msg = '账号或密码错误！';
           this.$refs.snackbar.open();
