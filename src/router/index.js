@@ -37,7 +37,7 @@ export default new Router({
         component: Post,
       },
       {
-        path: '/reviews',
+        path: '/myreview',
         component: Review,
       },
     ],

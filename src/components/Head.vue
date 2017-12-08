@@ -43,6 +43,12 @@
             <md-icon>people</md-icon> <span>查阅文章</span>
           </router-link>
         </md-list-item>
+
+        <md-list-item v-if="this.login && this.userinfo.role===2">
+          <router-link to="/myreview" v-on:click.native="toggleLeftSidenav">
+            <md-icon>people</md-icon> <span>我的评论</span>
+          </router-link>
+        </md-list-item>
       </md-list>
     </div>
   </md-sidenav>
@@ -61,6 +67,7 @@ export default {
       userinfo: {
         name: '',
         username: '',
+        role: -1,
       },
     };
   },

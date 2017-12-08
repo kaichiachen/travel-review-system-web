@@ -45,6 +45,13 @@ export default {
         this.$refs.snackbar.open();
         return;
       }
+      this.userInfo = {
+        name: 'eric',
+        username: 'eric',
+        role: 2,
+      };
+      this.RECORD_USERINFO(this.userInfo);
+      this.$emit('closeDialog', 'accepted');
 
       loginReq(this.username, this.pwd).then((success) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
