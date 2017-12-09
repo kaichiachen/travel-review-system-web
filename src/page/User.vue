@@ -77,7 +77,6 @@ export default {
       this.$refs.dialog.open();
     },
     closeDeleteDialog() {
-      this.users[0].role = '3';
       this.$refs.dialog.close();
     },
     deleteUser() {
