@@ -38,6 +38,12 @@
           </router-link>
         </md-list-item>
 
+        <md-list-item v-if="this.login && this.userinfo.role===0">
+          <router-link to="/users" v-on:click.native="toggleLeftSidenav">
+            <md-icon>people</md-icon> <span>会员名单</span>
+          </router-link>
+        </md-list-item>
+
         <md-list-item v-if="this.login">
           <router-link to="/posts" v-on:click.native="toggleLeftSidenav">
             <md-icon>people</md-icon> <span>查阅文章</span>

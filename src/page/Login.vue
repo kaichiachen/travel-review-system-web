@@ -48,7 +48,7 @@ export default {
       this.userInfo = {
         name: 'eric',
         username: 'eric',
-        role: 2,
+        role: 0,
       };
       this.RECORD_USERINFO(this.userInfo);
       this.$emit('closeDialog', 'accepted');

@@ -142,11 +142,14 @@ export default {
 }
 .md-table .md-table-cell.md-has-action .md-table-cell-container {
   justify-content: space-around;
+  font-size: 15pt;
 }
 .md-table .md-table-head {
   text-align: center;
+  font-size: 15pt;
 }
 .md-table .md-table-cell {
   text-align: center;
+  font-size: 15pt;
 }
 </style>

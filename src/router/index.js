@@ -6,6 +6,7 @@ import Login from '@/page/Login';
 import Register from '@/page/Register';
 import Post from '@/page/Post';
 import Review from '@/page/Review';
+import User from '@/page/User';
 
 Vue.use(Router);
 
@@ -31,6 +32,10 @@ export default new Router({
             component: Register,
           },
         ],
+      },
+      {
+        path: '/users',
+        component: User,
       },
       {
         path: '/posts',
