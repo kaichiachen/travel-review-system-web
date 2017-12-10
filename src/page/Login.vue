@@ -38,28 +38,23 @@ export default {
       'RECORD_USERINFO',
     ]),
     login() {
-      this.username = 'male';
-      this.pwd = '27';
+      this.username = 'xlb';
+      this.pwd = 'xlb';
       if (this.username == null || this.pwd == null) {
         this.$refs.snackbar.msg = '账号或密码不能为空！';
         this.$refs.snackbar.open();
         return;
       }
-      this.userInfo = {
-        name: 'eric',
-        username: 'eric',
-        role: 0,
-      };
-      this.RECORD_USERINFO(this.userInfo);
-      this.$emit('closeDialog', 'accepted');
 
       loginReq(this.username, this.pwd).then((success) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         // console.debug(success.User);
         if (success.User !== undefined && success.User.length === 1) {
           this.userInfo = {
+            id: success.User[0].id,
             name: success.User[0].name,
             username: this.username,
+            role: success.User[0].role,
           };
           this.RECORD_USERINFO(this.userInfo);
           this.$emit('closeDialog', 'accepted');

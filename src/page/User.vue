@@ -11,14 +11,14 @@
     </md-table-header>
 
     <md-table-body>
-        <md-table-row v-for="(row, index) in 3" :key="index">
-            <md-table-cell>{{ users[index].name }}</md-table-cell>
-            <md-table-cell>{{ users[index].username }}</md-table-cell>
+        <md-table-row v-for="(row, rowIndex) in users" :key="rowIndex" :md-item="row">
+            <md-table-cell>{{ row.name }}</md-table-cell>
+            <md-table-cell>{{ row.username }}</md-table-cell>
             <md-table-cell>
               <md-select
                 placeholder="角色"
-                v-model="users[index].role"
-                @selected="changeRole(index)">
+                v-model="row.role"
+                @selected="changeRole(rowIndex)">
                 <md-option value="0">管理员</md-option>
                 <md-option value="1">终审者</md-option>
                 <md-option value="2">评论者</md-option>
@@ -26,7 +26,7 @@
               </md-select>
             </md-table-cell>
             <md-table-cell>
-              <md-button class="md-icon-button md-raised md-accent" @click="showDeleteDialog(users[index])">
+              <md-button class="md-icon-button md-raised md-accent" @click="showDeleteDialog(row)">
                 X
               </md-button>
             </md-table-cell>
@@ -45,31 +45,38 @@
 
 <script>
 
+import { userListReq } from '@/service';
+
 export default {
   data: () => ({
     nowuser: {},
     users: [
-      {
-        name: 'ckj',
-        username: 'ckj',
-        role: '0',
-        id: 123,
-      },
-      {
-        name: 'wzx',
-        username: 'wzx',
-        role: '1',
-        id: 123,
-      },
-      {
-        name: 'zyz',
-        username: 'zyz',
-        role: '2',
-        id: 123,
-      },
     ],
   }),
+  mounted() {
+    this.initData();
+  },
   methods: {
+    initData() {
+      userListReq().then((success) => {
+        if (success.User !== undefined) {
+          this.users = [];
+          const res = success.User;
+          for (let i = 0; i < res.length; i += 1) {
+            this.users.push({
+              name: res[i].name,
+              username: res[i].username,
+              role: ''.concat(res[i].role),
+            });
+          }
+        }
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(this.users.length);
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+      });
+    },
     showDeleteDialog(user) {
       this.nowuser = user;
       /* eslint no-console: ["error", { allow: ["debug"] }] */

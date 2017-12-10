@@ -13,7 +13,7 @@
         <md-card-header>
           <md-card-header-text>
             <div class="md-title">{{ this.userinfo.name }}</div>
-            <div class="md-subhead">{{ this.userinfo.name }}</div>
+            <div class="md-subhead">{{ this.userinfo.username }}</div>
           </md-card-header-text>
 
           <md-card-media>

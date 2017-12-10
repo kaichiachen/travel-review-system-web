@@ -59,7 +59,7 @@ export const addReviewPostReq = (postInfo, userid) => fetch('reviewpost',
     posttime: postInfo.time,
     status: postInfo.status,
     location: postInfo.location,
-    userpostrelation: {
+    userreviewpostrelation: {
       id: userid,
       type: 'User',
     },
@@ -73,7 +73,7 @@ export const updateReviewPostReq = (postInfo, userid) => fetch(`reviewpost/${pos
     posttime: postInfo.time,
     location: postInfo.location,
     status: postInfo.status,
-    userpostrelation: {
+    userreviewpostrelation: {
       id: userid,
       type: 'User',
     },
