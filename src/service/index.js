@@ -6,12 +6,7 @@ export const loginReq = (username, pwd) => fetch(`user/?User.username=${username
   {}, 'GET',
 );
 export const userRegister = userInfo => fetch('user/',
-  {
-    name: userInfo.name,
-    username: userInfo.username,
-    pwd: userInfo.pwd,
-    role: userInfo.role,
-  }, 'POST',
+  userInfo, 'POST',
 );
 export const deleteUserReq = userid => fetch(`user/${userid}`,
   {}, 'DELETE',

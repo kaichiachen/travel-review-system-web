@@ -5,11 +5,19 @@
         <form novalidate @submit.stop.prevent="submit">
         <md-input-container>
             <label>账号: </label>
-            <md-input v-model="email"></md-input>
+            <md-input v-model="username"></md-input>
+        </md-input-container>
+        <md-input-container>
+            <label>名字: </label>
+            <md-input v-model="name"></md-input>
         </md-input-container>
         <md-input-container>
             <label>密码: </label>
             <md-input type="password" v-model="pwd"></md-input>
+        </md-input-container>
+        <md-input-container>
+            <label>再输入一次密码: </label>
+            <md-input type="password" v-model="pwdrepeat"></md-input>
         </md-input-container>
         </form>
         <md-button class="md-raised md-primary registerbtn" @click="register">注册</md-button>
@@ -19,6 +27,8 @@
 
 <script>
 import snackbar from '@/components/SnackBar';
+import { mapMutations } from 'vuex';
+import { userRegister } from '@/service';
 
 export default {
   data() {
@@ -38,8 +48,45 @@ export default {
     snackbar,
   },
   methods: {
+    ...mapMutations([
+      'RECORD_USERINFO',
+    ]),
     register() {
-      this.$emit('closeDialog', 'accepted');
+      if (this.username == null || this.pwd == null
+      || this.name == null || this.pwdrepeat == null) {
+        this.$refs.snackbar.msg = '资料请填全！';
+        this.$refs.snackbar.open();
+        return;
+      } else if (this.pwd !== this.pwdrepeat) {
+        this.$refs.snackbar.msg = '密码不一致！';
+        this.$refs.snackbar.open();
+        return;
+      }
+
+      userRegister({
+        name: this.name,
+        username: this.username,
+        pwd: this.pwd,
+        role: 3,
+      }).then((success) => {
+        if (success !== null && success.id != null) {
+          this.$refs.snackbar.msg = '注册成功！';
+          this.$refs.snackbar.open();
+          this.RECORD_USERINFO({
+            id: success.id,
+            name: this.name,
+            username: this.username,
+            role: 3,
+          });
+          this.$emit('closeDialog', 'accepted');
+        } else {
+          this.$refs.snackbar.msg = '注册失败！';
+          this.$refs.snackbar.open();
+        }
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+      });
     },
   },
 };

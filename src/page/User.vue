@@ -93,6 +93,7 @@ export default {
         if (success.message === 'success') {
           this.$refs.snackbar.msg = '删除完毕';
           this.$refs.snackbar.open();
+          this.initData();
         } else {
           this.$refs.snackbar.msg = '删除失败';
           this.$refs.snackbar.open();

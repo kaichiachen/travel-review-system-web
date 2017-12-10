@@ -5,12 +5,11 @@ export default async (router = '', data = {}, method = 'GET', type = 'json') => 
   const reqUrl = baseUrl + router;
   const requestConfig = {
     method: reqMethod,
+    headers: {
+      'Content-Type': 'application/json',
+    },
   };
   if (type === 'json') {
-    Object.defineProperty(requestConfig, 'Content-Type', {
-      value: 'application/json',
-    });
-
     if (method === 'POST') {
       Object.defineProperty(requestConfig, 'body', {
         value: JSON.stringify(data),
@@ -28,16 +27,10 @@ export default async (router = '', data = {}, method = 'GET', type = 'json') => 
     /* eslint no-empty: "error" */
   }
   return new Promise((resolve, reject) => {
-    if (response === undefined) {
-      responseJson.msg = 'Unknown Error';
-      reject(responseJson);
-    } else if (response.status !== 200) {
-      if (!('msg' in responseJson)) {
-        responseJson.msg = 'Unknown Error';
-      }
-      reject(responseJson);
-    } else {
+    if (response.status === 200) {
       resolve(responseJson);
+    } else {
+      reject(responseJson);
     }
   });
 };

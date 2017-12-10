@@ -14,7 +14,7 @@ export default {
   [OUT_LOGIN](state) {
     state.userInfo = null;
     state.login = false;
-    setStore('login', false);
+    removeStore('login');
     removeStore('userInfo');
   },
 };
