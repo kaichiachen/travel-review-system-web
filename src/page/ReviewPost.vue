@@ -2,12 +2,12 @@
 <div class="reviewdetailcontainer">
   <md-card md-with-hover>
     <md-card-header>
-        <div class="md-title">{{reviewinfo.posttitle}}</div>
-        <div class="md-subhead">作者：{{reviewinfo.postauthor}}</div>
+        <div class="md-title">{{reviewinfo.title}}</div>
+        <div class="md-subhead">作者：{{reviewinfo.author}}</div>
     </md-card-header>
 
     <md-card-content>
-        {{ reviewinfo.postcontent}}
+        {{ reviewinfo.content}}
     </md-card-content>
   </md-card>
 
@@ -29,7 +29,7 @@
 
     <md-card-content>
       <md-input-container>
-        <md-textarea maxlength="1000" v-model="this.reviewinfo.reviewcontent"></md-textarea>
+          <md-textarea maxlength="1000" v-model="this.reviewinfo.reviewcontent"></md-textarea>
       </md-input-container>
     </md-card-content>
     <md-card-actions>

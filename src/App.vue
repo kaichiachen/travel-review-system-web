@@ -19,7 +19,7 @@ export default {
   },
   mounted() {
     const info = store.getters.userInfo;
-    if (info !== 'null') {
+    if (info !== null && info !== 'null') {
       this.RECORD_USERINFO(store.getters.userInfo);
     }
   },

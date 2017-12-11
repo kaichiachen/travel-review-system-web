@@ -38,8 +38,8 @@ export default {
       'RECORD_USERINFO',
     ]),
     login() {
-      this.username = 'xlb';
-      this.pwd = 'xlb';
+      this.username = 'wzx';
+      this.pwd = 'wzx';
       if (this.username == null || this.pwd == null) {
         this.$refs.snackbar.msg = '账号或密码不能为空！';
         this.$refs.snackbar.open();

@@ -47,6 +47,10 @@ export const deleteDraftPostReq = postid => fetch(`draftpost/${postid}`,
   {}, 'DELETE',
 );
 
+export const reviewPostListReq = () => fetch('reviewpost',
+  {}, 'GET',
+);
+
 export const addReviewPostReq = (postInfo, userid) => fetch('reviewpost',
   {
     tile: postInfo.title,
