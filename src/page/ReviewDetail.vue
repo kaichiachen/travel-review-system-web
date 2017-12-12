@@ -28,14 +28,8 @@
     </md-card-header>
 
     <md-card-content>
-      <md-input-container>
-        <md-textarea maxlength="1000" v-model="this.reviewinfo.content"></md-textarea>
-      </md-input-container>
+      {{ this.reviewinfo.content }}
     </md-card-content>
-    <md-card-actions>
-      <md-button @click="cancel()">取消</md-button>
-      <md-button @click="confirm()">确定</md-button>
-  </md-card-actions>
   </md-card>
   <snackbar ref="snackbar"></snackbar>
   <loading ref="loading"></loading>
@@ -66,7 +60,7 @@ export default {
     confirm() {
       this.$refs.loading.open();
       updateReviewReq(this.reviewinfo).then(() => {
-        this.$emit('closeDialog', 'accepted', 'detailDialog');
+        this.$emit('closeDialog', 'detaildialog');
         this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -77,7 +71,7 @@ export default {
       });
     },
     cancel() {
-      this.$emit('closeDialog', 'cancel', 'detailDialog');
+      this.$emit('closeDialog', 'detailialog');
     },
     switchchange() {
       if (!this.ispass) {

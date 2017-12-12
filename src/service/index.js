@@ -108,7 +108,7 @@ export const reviewListReq = () => fetch('review',
 export const addReviewReq = (reviewInfo, postid, userid) => fetch('review',
   {
     content: reviewInfo.content,
-    submittime: reviewInfo.time,
+    submittime: reviewInfo.submittime,
     ispass: reviewInfo.ispass,
     userreviewrelation: {
       id: userid,

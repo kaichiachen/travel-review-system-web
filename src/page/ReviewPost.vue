@@ -53,6 +53,7 @@ export default {
     ispass: false,
     status: '否',
     postinfo: {},
+    reviewcontent: '',
   }),
   components: {
     loading,
@@ -72,11 +73,11 @@ export default {
       }
       const reviewInfo = {
         content: this.reviewcontent,
-        time: new Date().getTime(),
+        submittime: new Date().getTime(),
         ispass: isPass,
       };
       addReviewReq(reviewInfo, this.postinfo.id, this.userInfo.id).then(() => {
-        this.$emit('closeDialog', 'accepted', 'reviewdialog');
+        this.$emit('closeDialog', 'reviewdialog');
         this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -87,7 +88,7 @@ export default {
       });
     },
     cancel() {
-      this.$emit('closeDialog', 'cancel', 'reviewDialog');
+      this.$emit('closeDialog', 'reviewdialog');
     },
     switchchange() {
       if (!this.ispass) {

@@ -4,6 +4,7 @@
       <md-table-header>
           <md-table-row>
               <md-table-head>标题</md-table-head>
+              <md-table-head>作者</md-table-head>
               <md-table-head>地点</md-table-head>
               <md-table-head>时间</md-table-head>
               <md-table-head>其他操作</md-table-head>
@@ -13,6 +14,7 @@
       <md-table-body>
           <md-table-row v-for="(row, index) in reviews" :key="index">
               <md-table-cell>{{ reviews[index].reviewpostreviewrelation.title }}</md-table-cell>
+              <md-table-cell>{{ reviews[index].reviewpostreviewrelation.author }}</md-table-cell>
               <md-table-cell>{{ reviews[index].reviewpostreviewrelation.location }}</md-table-cell>
               <md-table-cell>{{ reviews[index].reviewpostreviewrelation.submittime }}</md-table-cell>
               <md-menu md-direction="bottom left" md-size="3">
@@ -115,7 +117,7 @@ export default {
     this.initAllReviews();
   },
   methods: {
-    initMyReviewss() {
+    initMyReviews() {
       reviewListReq().then((success) => {
         if (success.Review !== undefined) {
           const res = success.Review;
@@ -137,8 +139,11 @@ export default {
           const res = success.Reviewpost;
           this.allreviews = [];
           for (let i = 0; i < res.length; i += 1) {
-            res[i].submittime = timeConverter(res[i].submittime);
-            this.allreviews.push(res[i]);
+            if ((this.userInfo.role === 2 && res[i].status === 0)
+            || (this.userInfo.role === 1 && res[i].status === 1)) {
+              res[i].submittime = timeConverter(res[i].submittime);
+              this.allreviews.push(res[i]);
+            }
           }
         }
       }, (error) => {
@@ -165,12 +170,8 @@ export default {
       this.$refs.reviewpost.postinfo = this.allreviews[index];
       this.$refs.reviewdialog.open();
     },
-    reviewEventEmitted(status, ref) {
-      if (status === 'accepted') {
-        this.closeDialog(ref);
-      } else if (status === 'cancel') {
-        this.closeDialog(ref);
-      }
+    reviewEventEmitted(ref) {
+      this.closeDialog(ref);
     },
   },
 };
