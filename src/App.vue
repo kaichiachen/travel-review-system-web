@@ -20,7 +20,12 @@ export default {
   mounted() {
     const info = store.getters.userInfo;
     if (info !== null && info !== 'null') {
-      this.RECORD_USERINFO(store.getters.userInfo);
+      const userinfo = store.getters.userInfo;
+      if (userinfo != null && typeof (userinfo) === typeof ('String')) {
+        this.RECORD_USERINFO(JSON.parse(userinfo));
+      } else if (this.userInfo != null && typeof (this.userInfo) === typeof ({})) {
+        this.RECORD_USERINFO(this.userInfo);
+      }
     }
   },
   methods: {

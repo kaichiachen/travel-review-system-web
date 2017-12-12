@@ -29,7 +29,7 @@
 
     <md-card-content>
       <md-input-container>
-        <md-textarea maxlength="1000" v-model="this.reviewinfo.reviewcontent"></md-textarea>
+        <md-textarea maxlength="1000" v-model="this.reviewinfo.content"></md-textarea>
       </md-input-container>
     </md-card-content>
     <md-card-actions>
@@ -37,11 +37,17 @@
       <md-button @click="confirm()">确定</md-button>
   </md-card-actions>
   </md-card>
-  
+  <snackbar ref="snackbar"></snackbar>
+  <loading ref="loading"></loading>
 </div>
 </template>
 
 <script>
+
+import loading from '@/components/Loading';
+import snackbar from '@/components/SnackBar';
+import { updateReviewReq } from '@/service';
+
 export default {
   data: () => ({
     ispass: false,
@@ -52,12 +58,26 @@ export default {
     postcontent: '',
     reviewcontent: '',
   }),
+  components: {
+    loading,
+    snackbar,
+  },
   methods: {
     confirm() {
-      this.$emit('closeDialog', 'accepted');
+      this.$refs.loading.open();
+      updateReviewReq(this.reviewinfo).then(() => {
+        this.$emit('closeDialog', 'accepted', 'detailDialog');
+        this.$refs.loading.close();
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+        this.$refs.snackbar.msg = '不知名错误！';
+        this.$refs.snackbar.open();
+        this.$refs.loading.close();
+      });
     },
     cancel() {
-      this.$emit('closeDialog', 'cancel');
+      this.$emit('closeDialog', 'cancel', 'detailDialog');
     },
     switchchange() {
       if (!this.ispass) {

@@ -101,19 +101,28 @@ export const deletePostReq = postid => fetch(`post/${postid}`,
 );
 
 // review
+export const reviewListReq = () => fetch('review',
+  {}, 'GET',
+);
+
 export const addReviewReq = (reviewInfo, postid, userid) => fetch('review',
   {
     content: reviewInfo.content,
-    reviewtime: reviewInfo.time,
-    userpostrelation: {
+    submittime: reviewInfo.time,
+    ispass: reviewInfo.ispass,
+    userreviewrelation: {
       id: userid,
       type: 'User',
     },
-    postreviewrelation: {
+    reviewpostreviewrelation: {
       id: postid,
       type: 'ReviewPost',
     },
   }, 'POST',
+);
+
+export const updateReviewReq = reviewInfo => fetch('review',
+  reviewInfo, 'PUT',
 );
 
 export const deleteReviewReq = reviewid => fetch(`review/${reviewid}`,

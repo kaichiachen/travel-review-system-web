@@ -2,12 +2,12 @@
 <div class="reviewdetailcontainer">
   <md-card md-with-hover>
     <md-card-header>
-        <div class="md-title">{{reviewinfo.title}}</div>
-        <div class="md-subhead">作者：{{reviewinfo.author}}</div>
+        <div class="md-title">{{postinfo.title}}</div>
+        <div class="md-subhead">作者：{{postinfo.author}}</div>
     </md-card-header>
 
     <md-card-content>
-        {{ reviewinfo.content}}
+        {{ postinfo.content}}
     </md-card-content>
   </md-card>
 
@@ -29,7 +29,7 @@
 
     <md-card-content>
       <md-input-container>
-          <md-textarea maxlength="1000" v-model="this.reviewinfo.reviewcontent"></md-textarea>
+          <md-textarea maxlength="1000" v-model="reviewcontent"></md-textarea>
       </md-input-container>
     </md-card-content>
     <md-card-actions>
@@ -37,27 +37,57 @@
       <md-button @click="confirm()">确定</md-button>
   </md-card-actions>
   </md-card>
-  
+  <snackbar ref="snackbar"></snackbar>
+  <loading ref="loading"></loading>
 </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import loading from '@/components/Loading';
+import snackbar from '@/components/SnackBar';
+import { addReviewReq } from '@/service';
+
 export default {
   data: () => ({
     ispass: false,
     status: '否',
-    reviewinfo: {},
-    posttitle: '',
-    postauther: '',
-    postcontent: '',
-    reviewcontent: '',
+    postinfo: {},
   }),
+  components: {
+    loading,
+    snackbar,
+  },
+  computed: {
+    ...mapState([
+      'userInfo',
+    ]),
+  },
   methods: {
     confirm() {
-      this.$emit('closeDialog', 'accepted');
+      this.$refs.loading.open();
+      let isPass = 0;
+      if (this.ispass === true) {
+        isPass = 1;
+      }
+      const reviewInfo = {
+        content: this.reviewcontent,
+        time: new Date().getTime(),
+        ispass: isPass,
+      };
+      addReviewReq(reviewInfo, this.postinfo.id, this.userInfo.id).then(() => {
+        this.$emit('closeDialog', 'accepted', 'reviewdialog');
+        this.$refs.loading.close();
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+        this.$refs.snackbar.msg = '不知名错误！';
+        this.$refs.snackbar.open();
+        this.$refs.loading.close();
+      });
     },
     cancel() {
-      this.$emit('closeDialog', 'cancel');
+      this.$emit('closeDialog', 'cancel', 'reviewDialog');
     },
     switchchange() {
       if (!this.ispass) {

@@ -40,7 +40,9 @@
         <md-button class="md-primary" @click="closeDeleteDialog()">否</md-button>
       </md-dialog-actions>
     </md-dialog>
+    
     <snackbar ref="snackbar"></snackbar>
+    <loading ref="loading"></loading>
   </div>
 </template>
 
@@ -48,6 +50,7 @@
 
 import { userListReq, deleteUserReq } from '@/service';
 import snackbar from '@/components/SnackBar';
+import loading from '@/components/Loading';
 
 export default {
   data: () => ({
@@ -59,6 +62,7 @@ export default {
     this.initData();
   },
   components: {
+    loading,
     snackbar,
   },
   methods: {
@@ -79,6 +83,8 @@ export default {
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        this.$refs.snackbar.msg = '不知名错误！';
+        this.$refs.snackbar.open();
       });
     },
     showDeleteDialog(user) {
@@ -89,6 +95,7 @@ export default {
       this.$refs.dialog.close();
     },
     deleteUser() {
+      this.$refs.loading.open();
       deleteUserReq(this.nowuser.id).then((success) => {
         if (success.message === 'success') {
           this.$refs.snackbar.msg = '删除完毕';
@@ -102,6 +109,9 @@ export default {
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        this.$refs.snackbar.msg = '不知名错误！';
+        this.$refs.snackbar.open();
+        this.$refs.loading.close();
       });
     },
     changeRole(index) {

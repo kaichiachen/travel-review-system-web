@@ -14,6 +14,7 @@
         </form>
         <md-button class="md-raised md-primary loginbtn" @click="login">登入</md-button>
         <snackbar ref="snackbar"></snackbar>
+        <loading ref="loading"></loading>
     </div>
 </template>
 
@@ -21,6 +22,7 @@
 import { mapMutations } from 'vuex';
 import { loginReq } from '@/service';
 import snackbar from '@/components/SnackBar';
+import loading from '@/components/Loading';
 
 export default {
   data() {
@@ -32,12 +34,14 @@ export default {
   },
   components: {
     snackbar,
+    loading,
   },
   methods: {
     ...mapMutations([
       'RECORD_USERINFO',
     ]),
     login() {
+      this.$refs.loading.open();
       this.username = 'wzx';
       this.pwd = 'wzx';
       if (this.username == null || this.pwd == null) {
@@ -63,9 +67,13 @@ export default {
           this.$refs.snackbar.msg = '账号或密码错误！';
           this.$refs.snackbar.open();
         }
+        this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        this.$refs.snackbar.msg = '不知名错误！';
+        this.$refs.snackbar.open();
+        this.$refs.loading.close();
       });
     },
   },
