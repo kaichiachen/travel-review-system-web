@@ -46,14 +46,16 @@
 import { mapState } from 'vuex';
 import loading from '@/components/Loading';
 import snackbar from '@/components/SnackBar';
-import { addReviewReq } from '@/service';
+import { reviewPostListReq, addReviewReq, updateReviewPostReq, addPostReq } from '@/service';
 
 export default {
   data: () => ({
     ispass: false,
+    isPass: 0,
     status: '否',
     postinfo: {},
     reviewcontent: '',
+    allpostreviews: [],
   }),
   components: {
     loading,
@@ -64,20 +66,43 @@ export default {
       'userInfo',
     ]),
   },
+  mounted() {
+    this.initAllReviewPost();
+  },
   methods: {
+    initAllReviewPost() {
+      reviewPostListReq().then((success) => {
+        if (success.Reviewpost !== undefined) {
+          const res = success.Reviewpost;
+          this.allpostreviews = [];
+          for (let i = 0; i < res.length; i += 1) {
+            if (this.userInfo.role === 2 && res[i].status === 0) {
+              this.allpostreviews.push(res[i]);
+            }
+            if (this.userInfo.role === 1 && res[i].status === 1) {
+              this.allpostreviews.push(res[i]);
+            }
+          }
+        }
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+      });
+    },
     confirm() {
       this.$refs.loading.open();
-      let isPass = 0;
+      this.isPass = 0;
       if (this.ispass === true) {
-        isPass = 1;
+        this.isPass = 1;
       }
+      // submittime: new Date().getTime(),
       const reviewInfo = {
         content: this.reviewcontent,
-        submittime: new Date().getTime(),
-        ispass: isPass,
+        ispass: this.isPass,
       };
-      addReviewReq(reviewInfo, this.postinfo.id, this.userInfo.id).then(() => {
-        this.$emit('closeDialog', 'reviewdialog');
+      addReviewReq(reviewInfo, this.postinfo.id, this.userInfo.name).then(() => {
+        this.checkScore();
+        this.$emit('closeDialog', 'accept', 'reviewdialog');
         this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -87,8 +112,73 @@ export default {
         this.$refs.loading.close();
       });
     },
+    checkScore() {
+      for (let i = 0; i < this.allpostreviews.length; i += 1) {
+        if (this.allpostreviews[i].id === this.postinfo.id) {
+          if (this.userInfo.role === 2 && this.allpostreviews[i].status === 0) {
+            this.allpostreviews[i].reviewnum += 1;
+            if (this.ispass) {
+              this.allpostreviews[i].count += 1;
+            }
+            if (this.allpostreviews[i].reviewnum - this.allpostreviews[i].count >= 3) {
+              this.allpostreviews[i].status = -1;
+              this.reviewpostFailOut(this.allpostreviews[i]);
+            } else {
+              if (this.allpostreviews[i].count >= 3) {
+                this.allpostreviews[i].status += 1;
+              }
+              this.reviewpostPass(this.allpostreviews[i]);
+            }
+            break;
+          } else if (this.userInfo.role === 1 && this.allpostreviews[i].status === 1) {
+            this.allpostreviews[i].reviewnum += 1;
+            if (this.ispass) {
+              this.allpostreviews[i].count += 1;
+            }
+            if (this.allpostreviews[i].reviewnum - this.allpostreviews[i].count >= 2) {
+              this.allpostreviews[i].status = -1;
+              this.reviewpostFailOut(this.allpostreviews[i]);
+            } else {
+              if (this.allpostreviews[i].count >= 2) {
+                this.allpostreviews[i].status += 1;
+              }
+              this.reviewpostPass(this.allpostreviews[i]);
+            }
+            break;
+          }
+        }
+      }
+    },
+    reviewpostFailOut(info) {
+      updateReviewPostReq(info).then(() => {
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+      });
+    },
+    reviewpostPass(info) {
+      if (info.status !== 2) {
+        updateReviewPostReq(info).then(() => {
+        }, (error) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(error);
+        });
+      } else {
+        addPostReq({
+          tile: info.title,
+          content: info.content,
+          submittime: info.submittime,
+          location: info.location,
+          author: info.author,
+        }).then(() => {
+        }, (error) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(error);
+        });
+      }
+    },
     cancel() {
-      this.$emit('closeDialog', 'reviewdialog');
+      this.$emit('closeDialog', 'cancel', 'reviewdialog');
     },
     switchchange() {
       if (!this.ispass) {

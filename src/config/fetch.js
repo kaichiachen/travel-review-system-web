@@ -10,7 +10,7 @@ export default async (router = '', data = {}, method = 'GET', type = 'json') => 
     },
   };
   if (type === 'json') {
-    if (method === 'POST') {
+    if (method === 'POST' || method === 'PUT') {
       Object.defineProperty(requestConfig, 'body', {
         value: JSON.stringify(data),
       });

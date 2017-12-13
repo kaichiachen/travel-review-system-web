@@ -12,23 +12,19 @@
       </md-table-header>
 
       <md-table-body>
-          <md-table-row v-for="(row, index) in reviews" :key="index">
-              <md-table-cell>{{ reviews[index].reviewpostreviewrelation.title }}</md-table-cell>
-              <md-table-cell>{{ reviews[index].reviewpostreviewrelation.author }}</md-table-cell>
-              <md-table-cell>{{ reviews[index].reviewpostreviewrelation.location }}</md-table-cell>
-              <md-table-cell>{{ reviews[index].reviewpostreviewrelation.submittime }}</md-table-cell>
+          <md-table-row v-for="(row, index) in myreviews" :key="index">
+              <md-table-cell>{{ myreviews[index].posttitle }}</md-table-cell>
+              <md-table-cell>{{ myreviews[index].postauthor }}</md-table-cell>
+              <md-table-cell>{{ myreviews[index].postlocation }}</md-table-cell>
+              <md-table-cell>{{ myreviews[index].postsubmittime }}</md-table-cell>
               <md-menu md-direction="bottom left" md-size="3">
                   <md-button class="md-icon-button" md-menu-trigger>
                       <md-icon>edit</md-icon>
                   </md-button>
                   <md-menu-content>
-                    <md-menu-item @click="deleteReview(reviews[index].id)">
-                      <md-icon>delete</md-icon>
-                      <span>删除</span>
-                    </md-menu-item>
                     <md-menu-item @click="showDetail(index)">
                       <md-icon>details</md-icon>
-                      <span>修改/检视</span>
+                      <span>检视</span>
                     </md-menu-item>
                   </md-menu-content>
               </md-menu>
@@ -80,6 +76,7 @@
       </md-dialog-content>
     </md-dialog>
     <snackbar ref="snackbar"></snackbar>
+    <loading ref="loading"></loading>
 </div>
 </template>
 
@@ -91,6 +88,7 @@ import reviewdetail from '@/page/ReviewDetail';
 import reviewpost from '@/page/ReviewPost';
 import snackbar from '@/components/SnackBar';
 import { mapState } from 'vuex';
+import loading from '@/components/Loading';
 
 export default {
   data() {
@@ -98,14 +96,17 @@ export default {
       nowreview: {},
       allreviews: [
       ],
-      reviews: [
+      myreviews: [
       ],
+      isAllReviewsDownload: false,
+      isMyReviewsDownload: false,
     };
   },
   components: {
     snackbar,
     reviewdetail,
     reviewpost,
+    loading,
   },
   computed: {
     ...mapState([
@@ -118,19 +119,32 @@ export default {
   },
   methods: {
     initMyReviews() {
+      // this.$refs.loading.open();
       reviewListReq().then((success) => {
         if (success.Review !== undefined) {
           const res = success.Review;
-          this.reviews = [];
+          this.myreviews = [];
           for (let i = 0; i < res.length; i += 1) {
-            this.revies.push(res[i]);
+            if (res[i].author === this.userInfo.name) {
+              this.myreviews.push(res[i]);
+            }
           }
+        }
+        this.isMyReviewsDownload = true;
+        if (this.isMyReviewsDownload && this.isAllReviewsDownload) {
+          this.mergeData();
+          this.$refs.loading.close();
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
         this.$refs.snackbar.msg = '不知名错误！';
         this.$refs.snackbar.open();
+        this.isMyReviewsDownload = true;
+        if (this.isMyReviewsDownload && this.isAllReviewsDownload) {
+          this.$refs.loading.close();
+          this.mergeData();
+        }
       });
     },
     initAllReviews() {
@@ -146,18 +160,43 @@ export default {
             }
           }
         }
+        this.isAllReviewsDownload = true;
+        if (this.isMyReviewsDownload && this.isAllReviewsDownload) {
+          this.$refs.loading.close();
+          this.mergeData();
+        }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        this.isAllReviewsDownload = true;
+        if (this.isMyReviewsDownload && this.isAllReviewsDownload) {
+          this.$refs.loading.close();
+          this.mergeData();
+        }
       });
+    },
+    mergeData() {
+      for (let i = 0; i < this.myreviews.length; i += 1) {
+        for (let j = this.allreviews.length - 1; j >= 0; j -= 1) {
+          if (this.myreviews[i].postid === this.allreviews[j].id) {
+            this.myreviews[i].posttitle = this.allreviews[j].title;
+            this.myreviews[i].postauthor = this.allreviews[j].author;
+            this.myreviews[i].postlocation = this.allreviews[j].location;
+            this.myreviews[i].postsubmittime = this.allreviews[j].submittime;
+            this.myreviews[i].postcontent = this.allreviews[j].content;
+            this.allreviews.splice(j, 1);
+            break;
+          }
+        }
+      }
     },
     closeDialog(ref) {
       this.$refs[ref].close();
     },
     showDetail(index) {
       this.type = 'reviewdetail';
-      this.$refs.reviewdetail.reviewinfo = this.reviews[index];
-      this.$refs.reviewdetail.ispass = this.reviews[index].ispass;
+      this.$refs.reviewdetail.reviewinfo = this.myreviews[index];
+      this.$refs.reviewdetail.ispass = this.myreviews[index].ispass;
       if (this.$refs.reviewdetail.ispass) {
         this.$refs.reviewdetail.status = '是';
       } else {
@@ -170,8 +209,15 @@ export default {
       this.$refs.reviewpost.postinfo = this.allreviews[index];
       this.$refs.reviewdialog.open();
     },
-    reviewEventEmitted(ref) {
+    reviewEventEmitted(msg, ref) {
       this.closeDialog(ref);
+      if (msg === 'accept' && ref === 'reviewdialog') {
+        this.isMyReviewsDownload = false;
+        this.isAllReviewsDownload = false;
+        this.initMyReviews();
+        this.initAllReviews();
+        this.$refs.loading.open();
+      }
     },
   },
 };

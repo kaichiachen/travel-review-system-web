@@ -17,29 +17,23 @@ export const userListReq = () => fetch('user',
 );
 
 // post
-export const addDraftPostReq = (postInfo, userid) => fetch('draftpost',
+export const addDraftPostReq = postInfo => fetch('draftpost',
   {
     tile: postInfo.title,
     content: postInfo.content,
-    posttime: postInfo.time,
+    submittime: postInfo.time,
     location: postInfo.location,
-    userpostrelation: {
-      id: userid,
-      type: 'User',
-    },
+    author: postInfo.author,
   }, 'POST',
 );
 
-export const updateDraftPostReq = (postInfo, userid) => fetch(`draftpost/${postInfo.id}`,
+export const updateDraftPostReq = postInfo => fetch(`draftpost/${postInfo.id}`,
   {
     tile: postInfo.title,
     content: postInfo.content,
     posttime: postInfo.time,
     location: postInfo.location,
-    userpostrelation: {
-      id: userid,
-      type: 'User',
-    },
+    submittime: postInfo.author,
   }, 'PUT',
 );
 
@@ -51,49 +45,29 @@ export const reviewPostListReq = () => fetch('reviewpost',
   {}, 'GET',
 );
 
-export const addReviewPostReq = (postInfo, userid) => fetch('reviewpost',
+export const addReviewPostReq = postInfo => fetch('reviewpost',
   {
     tile: postInfo.title,
     content: postInfo.content,
-    posttime: postInfo.time,
-    status: postInfo.status,
+    submittime: postInfo.time,
     location: postInfo.location,
-    userreviewpostrelation: {
-      id: userid,
-      type: 'User',
-    },
+    author: postInfo.author,
+    count: 0,
+    status: 0,
+    reviewnum: 0,
   }, 'POST',
 );
 
-export const updateReviewPostReq = (postInfo, userid) => fetch(`reviewpost/${postInfo.id}`,
-  {
-    tile: postInfo.title,
-    content: postInfo.content,
-    posttime: postInfo.time,
-    location: postInfo.location,
-    status: postInfo.status,
-    userreviewpostrelation: {
-      id: userid,
-      type: 'User',
-    },
-  }, 'PUT',
+export const updateReviewPostReq = postInfo => fetch(`reviewpost/${postInfo.id}`,
+  postInfo, 'PUT',
 );
 
 export const deleteReviewPostReq = postid => fetch(`reviewpost/${postid}`,
   {}, 'DELETE',
 );
 
-export const addPostReq = (postInfo, userid) => fetch('post',
-  {
-    tile: postInfo.title,
-    content: postInfo.content,
-    posttime: postInfo.time,
-    location: postInfo.location,
-    userpostrelation: {
-      id: userid,
-      type: 'User',
-    },
-  }, 'POST',
+export const addPostReq = postInfo => fetch('post',
+  postInfo, 'POST',
 );
 
 export const deletePostReq = postid => fetch(`post/${postid}`,
@@ -105,19 +79,12 @@ export const reviewListReq = () => fetch('review',
   {}, 'GET',
 );
 
-export const addReviewReq = (reviewInfo, postid, userid) => fetch('review',
+export const addReviewReq = (reviewInfo, postID, name) => fetch('review',
   {
     content: reviewInfo.content,
-    submittime: reviewInfo.submittime,
     ispass: reviewInfo.ispass,
-    userreviewrelation: {
-      id: userid,
-      type: 'User',
-    },
-    reviewpostreviewrelation: {
-      id: postid,
-      type: 'ReviewPost',
-    },
+    author: name,
+    postid: postID,
   }, 'POST',
 );
 

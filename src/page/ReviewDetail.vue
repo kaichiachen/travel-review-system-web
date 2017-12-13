@@ -17,7 +17,7 @@
     </md-card-header>
 
     <md-card-content>
-        <md-switch v-model="ispass" id="my-test1" name="my-test1" class="md-primary"  @change="switchchange()">{{status}}</md-switch>
+        <md-switch v-model="ispass" id="my-test1" name="my-test1" class="md-primary"  @change="switchchange()" disabled>{{status}}</md-switch>
     </md-card-content>
   </md-card>
   
@@ -58,9 +58,8 @@ export default {
   },
   methods: {
     confirm() {
-      this.$refs.loading.open();
       updateReviewReq(this.reviewinfo).then(() => {
-        this.$emit('closeDialog', 'detaildialog');
+        this.$emit('closeDialog', 'accept', 'detaildialog');
         this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -71,7 +70,7 @@ export default {
       });
     },
     cancel() {
-      this.$emit('closeDialog', 'detailialog');
+      this.$emit('closeDialog', 'cancel', 'detailialog');
     },
     switchchange() {
       if (!this.ispass) {
