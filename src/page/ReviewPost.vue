@@ -126,6 +126,8 @@ export default {
             } else {
               if (this.allpostreviews[i].count >= 3) {
                 this.allpostreviews[i].status += 1;
+                this.allpostreviews[i].count = 0;
+                this.allpostreviews[i].reviewnum = 0;
               }
               this.reviewpostPass(this.allpostreviews[i]);
             }
@@ -157,15 +159,14 @@ export default {
       });
     },
     reviewpostPass(info) {
-      if (info.status !== 2) {
-        updateReviewPostReq(info).then(() => {
-        }, (error) => {
-          /* eslint no-console: ["error", { allow: ["debug"] }] */
-          console.debug(error);
-        });
-      } else {
+      updateReviewPostReq(info).then(() => {
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+      });
+      if (info.status === 2) {
         addPostReq({
-          tile: info.title,
+          title: info.title,
           content: info.content,
           submittime: info.submittime,
           location: info.location,

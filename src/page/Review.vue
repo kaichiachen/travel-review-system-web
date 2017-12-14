@@ -1,68 +1,78 @@
 <template>
 <div class="reviewContainer">
-    <md-table>
-      <md-table-header>
-          <md-table-row>
-              <md-table-head>标题</md-table-head>
-              <md-table-head>作者</md-table-head>
-              <md-table-head>地点</md-table-head>
-              <md-table-head>时间</md-table-head>
-              <md-table-head>其他操作</md-table-head>
-          </md-table-row>
-      </md-table-header>
+    <md-table-card style="padding-bottom: 50px; padding-top: 50px;">
+      <md-toolbar>
+          <h1 class="md-title">我的评论</h1>
+      </md-toolbar>
+      <md-table>
+        <md-table-header>
+            <md-table-row>
+                <md-table-head>标题</md-table-head>
+                <md-table-head>作者</md-table-head>
+                <md-table-head>地点</md-table-head>
+                <md-table-head>时间</md-table-head>
+                <md-table-head>其他操作</md-table-head>
+            </md-table-row>
+        </md-table-header>
 
-      <md-table-body>
-          <md-table-row v-for="(row, index) in myreviews" :key="index">
-              <md-table-cell>{{ myreviews[index].posttitle }}</md-table-cell>
-              <md-table-cell>{{ myreviews[index].postauthor }}</md-table-cell>
-              <md-table-cell>{{ myreviews[index].postlocation }}</md-table-cell>
-              <md-table-cell>{{ myreviews[index].postsubmittime }}</md-table-cell>
-              <md-menu md-direction="bottom left" md-size="3">
-                  <md-button class="md-icon-button" md-menu-trigger>
-                      <md-icon>edit</md-icon>
-                  </md-button>
-                  <md-menu-content>
-                    <md-menu-item @click="showDetail(index)">
-                      <md-icon>details</md-icon>
-                      <span>检视</span>
-                    </md-menu-item>
-                  </md-menu-content>
-              </md-menu>
-          </md-table-row>
-      </md-table-body>
-    </md-table>
+        <md-table-body>
+            <md-table-row v-for="(row, index) in myreviews" :key="index">
+                <md-table-cell>{{ myreviews[index].posttitle }}</md-table-cell>
+                <md-table-cell>{{ myreviews[index].postauthor }}</md-table-cell>
+                <md-table-cell>{{ myreviews[index].postlocation }}</md-table-cell>
+                <md-table-cell>{{ myreviews[index].postsubmittime }}</md-table-cell>
+                <md-menu md-direction="bottom left" md-size="3">
+                    <md-button class="md-icon-button" md-menu-trigger>
+                        <md-icon>edit</md-icon>
+                    </md-button>
+                    <md-menu-content>
+                      <md-menu-item @click="showDetail(index)">
+                        <md-icon>details</md-icon>
+                        <span>检视</span>
+                      </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-table-row>
+        </md-table-body>
+      </md-table>
+    </md-table-card>
 
-    <md-table>
-      <md-table-header>
-          <md-table-row>
-              <md-table-head>标题</md-table-head>
-              <md-table-head>作者</md-table-head>
-              <md-table-head>地点</md-table-head>
-              <md-table-head>时间</md-table-head>
-              <md-table-head>其他操作</md-table-head>
-          </md-table-row>
-      </md-table-header>
+    <md-table-card style="margin-top: 50px; padding-bottom: 50px; padding-top: 50px;">
+      <md-toolbar>
+          <h1 class="md-title">可评论文章</h1>
+      </md-toolbar>
+      <md-table>
+        <md-table-header>
+            <md-table-row>
+                <md-table-head>标题</md-table-head>
+                <md-table-head>作者</md-table-head>
+                <md-table-head>地点</md-table-head>
+                <md-table-head>时间</md-table-head>
+                <md-table-head>其他操作</md-table-head>
+            </md-table-row>
+        </md-table-header>
 
-      <md-table-body>
-          <md-table-row v-for="(row, index) in allreviews" :key="index">
-              <md-table-cell>{{ allreviews[index].title }}</md-table-cell>
-              <md-table-cell>{{ allreviews[index].author }}</md-table-cell>
-              <md-table-cell>{{ allreviews[index].location }}</md-table-cell>
-              <md-table-cell>{{ allreviews[index].submittime }}</md-table-cell>
-              <md-menu md-direction="bottom left" md-size="3">
-                  <md-button class="md-icon-button" md-menu-trigger>
-                      <md-icon>edit</md-icon>
-                  </md-button>
-                  <md-menu-content>
-                    <md-menu-item @click="reviewpost(index)">
-                      <md-icon>details</md-icon>
-                      <span>评论</span>
-                    </md-menu-item>
-                  </md-menu-content>
-              </md-menu>
-          </md-table-row>
-      </md-table-body>
-    </md-table>
+        <md-table-body>
+            <md-table-row v-for="(row, index) in allreviews" :key="index">
+                <md-table-cell>{{ allreviews[index].title }}</md-table-cell>
+                <md-table-cell>{{ allreviews[index].author }}</md-table-cell>
+                <md-table-cell>{{ allreviews[index].location }}</md-table-cell>
+                <md-table-cell>{{ allreviews[index].submittime }}</md-table-cell>
+                <md-menu md-direction="bottom left" md-size="3">
+                    <md-button class="md-icon-button" md-menu-trigger>
+                        <md-icon>edit</md-icon>
+                    </md-button>
+                    <md-menu-content>
+                      <md-menu-item @click="reviewpost(index)">
+                        <md-icon>details</md-icon>
+                        <span>评论</span>
+                      </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+            </md-table-row>
+        </md-table-body>
+      </md-table>
+    </md-table-card>
 
 
     <md-dialog md-open-from="#custom" md-close-to="#custom" ref="detaildialog">
@@ -230,8 +240,6 @@ export default {
     padding-bottom: 3%;
     margin-left: 5%;
     width: 90%;
-    border: 1px groove;
-    border-color: #CCCCCC;
 }
 .dialogcontent {
   width: 70vw;

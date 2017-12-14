@@ -42,8 +42,8 @@ export default {
     ]),
     login() {
       this.$refs.loading.open();
-      this.username = 'wzx';
-      this.pwd = 'wzx';
+      this.username = 'ckj';
+      this.pwd = 'ckj';
       if (this.username == null || this.pwd == null) {
         this.$refs.snackbar.msg = '账号或密码不能为空！';
         this.$refs.snackbar.open();
