@@ -7,6 +7,7 @@ import Register from '@/page/Register';
 import Post from '@/page/Post';
 import Review from '@/page/Review';
 import User from '@/page/User';
+import NewPost from '@/page/NewPost';
 
 Vue.use(Router);
 
@@ -44,6 +45,10 @@ export default new Router({
       {
         path: '/myreview',
         component: Review,
+      },
+      {
+        path: '/draft',
+        component: NewPost,
       },
     ],
   }],

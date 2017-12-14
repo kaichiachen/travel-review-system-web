@@ -74,6 +74,10 @@ export const deletePostReq = postid => fetch(`post/${postid}`,
   {}, 'DELETE',
 );
 
+export const postListReq = () => fetch('post',
+  {}, 'GET',
+);
+
 // review
 export const reviewListReq = () => fetch('review',
   {}, 'GET',
