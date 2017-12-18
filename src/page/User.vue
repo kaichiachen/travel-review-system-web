@@ -48,7 +48,7 @@
 
 <script>
 
-import { userListReq, deleteUserReq } from '@/service';
+import { userListReq, deleteUserReq, updateUserReq } from '@/service';
 import snackbar from '@/components/SnackBar';
 import loading from '@/components/Loading';
 
@@ -101,6 +101,7 @@ export default {
           this.$refs.snackbar.msg = '删除完毕';
           this.$refs.snackbar.open();
           this.initData();
+          this.$refs.loading.close();
         } else {
           this.$refs.snackbar.msg = '删除失败';
           this.$refs.snackbar.open();
@@ -115,9 +116,19 @@ export default {
       });
     },
     changeRole(index) {
+      this.$refs.loading.open();
       setTimeout(() => {
-        /* eslint no-console: ["error", { allow: ["debug"] }] */
-        console.debug(this.users[index].role);
+        this.users[index].role = parseInt(this.users[index].role, 3);
+        updateUserReq(this.users[index]).then(() => {
+          this.initData();
+          this.$refs.loading.close();
+        }, (error) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(error);
+          this.$refs.snackbar.msg = '不知名错误！';
+          this.$refs.snackbar.open();
+          this.$refs.loading.close();
+        });
       }, 500);
     },
   },
