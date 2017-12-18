@@ -55,7 +55,7 @@
                   {{cut(row.content)}}
                 </md-table-cell>
                 <md-table-cell>
-                  {{row.submittime}}
+                  {{row.time}}
                 </md-table-cell>           
                 <md-button class="md-primary" @click="showContent(rowIndex)">showDetail</md-button>
             </md-table-row>
@@ -118,6 +118,7 @@ export default {
               location: res[i].location,
               author: res[i].author,
               submittime: res[i].submittime,
+              time: timeConverter(res[i].submittime),
               content: res[i].content,
             });
           }
@@ -139,12 +140,11 @@ export default {
           const res = success.Post;
           for (let i = 0; i < res.length; i += 1) {
             if (this.searchString === res[i].title || this.searchString === res[i].location) {
-              res[i].submittime = timeConverter(res[i].submittime);
               this.posts.push({
                 title: res[i].title,
                 location: res[i].location,
                 author: res[i].author,
-                submittime: res[i].submittime,
+                time: timeConverter(res[i].submittime),
                 content: res[i].content,
               });
             }
