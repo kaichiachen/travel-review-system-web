@@ -76,33 +76,12 @@
 import snackbar from '@/components/SnackBar';
 import PostDetail from '@/page/PostDetail';
 import { postListReq } from '@/service';
+import { makeBST, timeConverter, findPost } from '@/config/utils';
 
 export default {
   data: () => ({
     searchString: 'enter to search',
     posts: [
-      {
-        title: '上海一日游',
-        location: '上海',
-        author: 'bugzyz',
-        submittime: '20170101',
-        content: `本篇游记仅适用于第二次及以上来上海的蜂蜂
-因为没有任何一个地方是旅行打卡地以及热门店铺（比如line等）
-其实这次来上海是待了五天的 只是因为40度的高温实在让人无法忍受 所以实际出门只有三天
-这三天中到处逛吃逛吃 走走停停 所以不打算按时间顺序来写这篇游记 
-那么我就来安利一下我的上海文艺行吧～
-（文末有惊喜 文艺小资必看哦）相信很多蜂蜂都和我一样 不喜欢人挤人的热门旅行地 喜欢别致、清净的地方
-在来上海之前 种草了2个展览 还有一大波咖啡/下午茶店 准备一一打卡 只可惜天气太热了 所以没能去完所有种草的店铺 （我还会再来打卡的）
-
-首先来介绍一下我看的两个展览吧～
-1⃣️透明的声音
-门票：50RMB
-地址：上海民生美术馆
-时间：7月31日结束 据说9月开始要续展（周一闭馆）
-一个非常 非常 奇妙的地方 有很多亮点和很多拍照的小细节 
-去看展还赠送一个好看的小杯垫
-不多说了直接上图～`,
-      },
     ],
   }),
   mounted() {
@@ -142,6 +121,9 @@ export default {
               content: res[i].content,
             });
           }
+          const bst = makeBST(this.posts);
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(findPost(bst, 20170606));
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -149,8 +131,6 @@ export default {
       });
     },
     refreshPosts() {
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug(this.searchString);
       postListReq().then((success) => {
         if (this.searchString === '') return;
         this.posts = [];
@@ -159,6 +139,7 @@ export default {
           const res = success.Post;
           for (let i = 0; i < res.length; i += 1) {
             if (this.searchString === res[i].title || this.searchString === res[i].location) {
+              res[i].submittime = timeConverter(res[i].submittime);
               this.posts.push({
                 title: res[i].title,
                 location: res[i].location,
