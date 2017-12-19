@@ -1,6 +1,6 @@
 <template>
 <div class="reviewContainer">
-    <md-table-card style="padding-bottom: 50px; padding-top: 50px;">
+    <md-table-card style="padding-bottom: 10px; padding-top: 10px;">
       <md-toolbar>
           <h1 class="md-title">我的评论</h1>
       </md-toolbar>
@@ -37,7 +37,7 @@
       </md-table>
     </md-table-card>
 
-    <md-table-card style="margin-top: 50px; padding-bottom: 50px; padding-top: 50px;">
+    <md-table-card style="margin-top: 50px; padding-bottom: 10px; padding-top: 10px;">
       <md-toolbar>
           <h1 class="md-title">可评论文章</h1>
       </md-toolbar>
@@ -235,8 +235,8 @@ export default {
 
 <<style>
 .reviewContainer {
-    margin-top: 3%;
-    padding-top: 3%;
+    margin-top: 1%;
+    padding-top: 1%;
     padding-bottom: 3%;
     margin-left: 5%;
     width: 90%;
@@ -246,14 +246,11 @@ export default {
 }
 .md-table .md-table-cell.md-has-action .md-table-cell-container {
   justify-content: space-around;
-  font-size: 15pt;
 }
 .md-table .md-table-head {
   text-align: center;
-  font-size: 15pt;
 }
 .md-table .md-table-cell {
   text-align: center;
-  font-size: 15pt;
 }
 </style>

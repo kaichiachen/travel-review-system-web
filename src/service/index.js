@@ -12,6 +12,10 @@ export const deleteUserReq = userid => fetch(`user/${userid}`,
   {}, 'DELETE',
 );
 
+export const updateUserReq = userinfo => fetch(`user/${userinfo.id}`,
+  userinfo, 'PUT',
+);
+
 export const userListReq = () => fetch('user',
   {}, 'GET',
 );

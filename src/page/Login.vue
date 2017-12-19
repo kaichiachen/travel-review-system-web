@@ -42,14 +42,11 @@ export default {
     ]),
     login() {
       this.$refs.loading.open();
-      this.username = 'ckj';
-      this.pwd = 'ckj';
       if (this.username == null || this.pwd == null) {
         this.$refs.snackbar.msg = '账号或密码不能为空！';
         this.$refs.snackbar.open();
         return;
       }
-
       loginReq(this.username, this.pwd).then((success) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         // console.debug(success.User);

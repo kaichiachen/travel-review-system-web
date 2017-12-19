@@ -2,26 +2,25 @@
   <div class="homeviewvontroller">
     <md-boards :md-auto="true" :md-infinite="true" :md-duration="5000" :md-swipeable="true">
       <md-board id="slide1" class="onboard">
-        <p class="board_des">枫红了愁绪，秋冷了回忆，古镇老墙添绿，又一年过去</p>
+        <p class="board_des">伦敦三日游</p>
       </md-board>
 
       <md-board id="slide2" class="onboard">
-        <p class="board_des">月光浸透，寒风里微颤抖，古老的记忆，依然不断的寻觅</p>
+        <p class="board_des">老上海巡礼</p>
       </md-board>
 
       <md-board id="slide3" class="onboard">
-        <p class="board_des">相信爱一天，抵过永远，在这一霎那冻结了时间</p>
+        <p class="board_des">七天环岛行</p>
       </md-board>
     </md-boards>
     <div class="card">
       <md-card md-with-hover class="md-card">
         <md-card-header>
           <div class="md-title">投稿</div>
-          <div class="md-subhead">投稿旅游文章</div>
         </md-card-header>
 
         <md-card-content>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in deleniti minus sint. Excepturi.
+          投稿旅游文章
         </md-card-content>
 
         <md-card-actions>
@@ -32,11 +31,10 @@
       <md-card md-with-hover class="md-card">
         <md-card-header>
           <div class="md-title">评审</div>
-          <div class="md-subhead">评审旅游文章</div>
         </md-card-header>
 
         <md-card-content>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in deleniti minus sint. Excepturi.
+          评审旅游文章
         </md-card-content>
 
         <md-card-actions>
@@ -47,11 +45,10 @@
       <md-card md-with-hover class="md-card">
         <md-card-header>
           <div class="md-title">查阅</div>
-          <div class="md-subhead">查阅旅游文章</div>
         </md-card-header>
 
         <md-card-content>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in deleniti minus sint. Excepturi.
+          查阅旅游文章
         </md-card-content>
 
         <md-card-actions>
@@ -161,7 +158,7 @@ export default {
 }
 
 .onboard {
-  height: 400px;
+  height: 600px;
   margin:0;
   text-align: center;
 }
@@ -170,7 +167,7 @@ export default {
   margin: 0 auto;
   display: block;
   color: white;
-  padding-top:350px;
+  padding-top:550px;
   font-size: 15pt;
   line-height: 20pt;
 }
@@ -201,19 +198,19 @@ export default {
 }
 
 #slide1 {
-  background-image: url("../assets/home/home_1.png");
+  background-image: url("../assets/home/home_1.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
 
 #slide2 {
-  background-image: url("../assets/home/home_2.png");
+  background-image: url("../assets/home/home_2.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
 
 #slide3 {
-  background-image: url("../assets/home/home_3.png");
+  background-image: url("../assets/home/home_3.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
