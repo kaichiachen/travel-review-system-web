@@ -8,6 +8,7 @@ import Post from '@/page/Post';
 import Review from '@/page/Review';
 import User from '@/page/User';
 import NewPost from '@/page/NewPost';
+import MyPost from '@/page/MyPost';
 
 Vue.use(Router);
 
@@ -49,6 +50,10 @@ export default new Router({
       {
         path: '/draft',
         component: NewPost,
+      },
+      {
+        path: '/myposts',
+        component: MyPost,
       },
     ],
   }],

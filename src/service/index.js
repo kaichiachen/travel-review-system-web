@@ -19,22 +19,26 @@ export const userListReq = () => fetch('user',
 // post
 export const addDraftPostReq = postInfo => fetch('draftpost',
   {
-    tile: postInfo.title,
+    title: postInfo.title,
     content: postInfo.content,
-    submittime: postInfo.time,
     location: postInfo.location,
     author: postInfo.author,
+    username: postInfo.username,
   }, 'POST',
 );
 
 export const updateDraftPostReq = postInfo => fetch(`draftpost/${postInfo.id}`,
   {
-    tile: postInfo.title,
+    title: postInfo.title,
     content: postInfo.content,
-    posttime: postInfo.time,
     location: postInfo.location,
-    submittime: postInfo.author,
+    author: postInfo.author,
+    username: postInfo.username,
   }, 'PUT',
+);
+
+export const draftListReq = () => fetch('draftpost',
+  {}, 'GET',
 );
 
 export const deleteDraftPostReq = postid => fetch(`draftpost/${postid}`,
@@ -47,7 +51,7 @@ export const reviewPostListReq = () => fetch('reviewpost',
 
 export const addReviewPostReq = postInfo => fetch('reviewpost',
   {
-    tile: postInfo.title,
+    title: postInfo.title,
     content: postInfo.content,
     submittime: postInfo.time,
     location: postInfo.location,
