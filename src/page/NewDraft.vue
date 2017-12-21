@@ -55,6 +55,10 @@ export default {
       author: ' ',
       username: ' ',
     },
+    invalidWords: [
+      '低端人口',
+      '大便',
+    ],
   }),
   components: {
     loading,
@@ -65,7 +69,7 @@ export default {
     cancel() {
     },
     submitDraft() {
-      this.draft.content = KmpWithTextAndReturnReplaceText(this.draft.content, '低端人口');
+      this.draft.content = KmpWithTextAndReturnReplaceText(this.draft.content, this.invalidWords);
       this.$refs.loading.open();
       addDraftPostReq(this.draft).then(() => {
         // addDraft

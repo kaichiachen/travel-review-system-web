@@ -43,6 +43,7 @@
 <script>
 import { updateDraftPostReq } from '@/service/index';
 import loading from '@/components/Loading';
+import { KmpWithTextAndReturnReplaceText } from '@/config/utils';
 
 
 export default {
@@ -55,6 +56,10 @@ export default {
       author: '',
       username: '',
     },
+    invalidWords: [
+      '低端人口',
+      '大便',
+    ],
   }),
   components: {
     loading,
@@ -67,6 +72,7 @@ export default {
     submitDraft() {
       this.printDetail();
       this.$refs.loading.open();
+      this.draft.content = KmpWithTextAndReturnReplaceText(this.draft.content, this.invalidWords);
       updateDraftPostReq(this.draft).then(() => {
         // addDraft
         this.$refs.loading.close();
