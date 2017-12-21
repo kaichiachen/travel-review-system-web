@@ -75,6 +75,7 @@ export default {
             this.users.push({
               id: res[i].id,
               name: res[i].name,
+              pwd: res[i].pwd,
               username: res[i].username,
               role: ''.concat(res[i].role),
             });
@@ -118,7 +119,7 @@ export default {
     changeRole(index) {
       this.$refs.loading.open();
       setTimeout(() => {
-        this.users[index].role = parseInt(this.users[index].role, 3);
+        this.users[index].role = parseInt(this.users[index].role, 4);
         updateUserReq(this.users[index]).then(() => {
           this.initData();
           this.$refs.loading.close();

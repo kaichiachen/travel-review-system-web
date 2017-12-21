@@ -17,7 +17,7 @@
 
           <md-button class="md-icon-button" @click="refreshPosts()" >
           <md-icon>search</md-icon></md-button>
-          <md-button class="md-icon-button" @click="initPost()" ><label>复原</label></md-button>
+          <md-button class="md-icon-button" @click="reloadPost()" ><label>复原</label></md-button>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -117,6 +117,10 @@ export default {
     cut(content) {
       return content.slice(0, 20);
     },
+    reloadPost() {
+      this.$refs.loading.open();
+      this.initPost();
+    },
     initPost() {
       postListReq().then((success) => {
         if (success.Post !== undefined) {
@@ -133,19 +137,19 @@ export default {
             });
           }
           this.bst = makeBST(this.posts);
-          /* eslint no-console: ["error", { allow: ["debug"] }] */
-          console.debug(findPost(this.bst, 20170606));
+          this.$refs.loading.close();
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        this.$refs.loading.close();
       });
     },
     refreshPosts() {
       switch (this.searchOption) {
         case '0': {
           const wd = new Date();
-          wd.setDay(wd.getDay() - 7);
+          wd.setDate(wd.getDate() - 7);
           this.posts = findPost(this.bst, wd, this.searchString);
           break;
         }
@@ -170,33 +174,6 @@ export default {
           break;
         }
       }
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      // console.debug(this.searchOption);
-      // this.$refs.loading.open();
-      // postListReq().then((success) => {
-      //   if (this.searchString === '') return;
-      //   this.posts = [];
-      //   if (success.Post !== undefined) {
-      //     this.posts = [];
-      //     const res = success.Post;
-      //     for (let i = 0; i < res.length; i += 1) {
-      //       if (this.searchString === res[i].title || this.searchString === res[i].location) {
-      //         this.posts.push({
-      //           title: res[i].title,
-      //           location: res[i].location,
-      //           author: res[i].author,
-      //           time: timeConverter(res[i].submittime),
-      //           content: res[i].content,
-      //         });
-      //       }
-      //     }
-      //   }
-      //   this.$refs.loading.close();
-      // }, (error) => {
-      //   /* eslint no-console: ["error", { allow: ["debug"] }] */
-      //   console.debug(error);
-      //   this.$refs.loading.close();
-      // });
     },
   },
 };
@@ -205,6 +182,7 @@ export default {
 <style>
 .postViewContainer{
   width: 95%;
+  padding-bottom: 10%;
 }
 
 .postViewContainer {

@@ -10,24 +10,15 @@
             <md-table-header>
             <md-table-row>
                 <md-table-head md-sort-by="title" md-tooltip="the title of posts">游记题目</md-table-head>
-                <md-table-head md-sort-by="location" md-tooltip="post's location">location</md-table-head>
+                <md-table-head md-sort-by="location" md-tooltip="post's location">地点</md-table-head>
                 <md-table-head md-sort-by="author"  md-tooltip="author?">作者</md-table-head>
                 <md-table-head md-sort-by="content"  md-tooltip="content?">正文</md-table-head>
-                <!-- <md-table-head md-sort-by="submittime"  md-tooltip="submittime?">发表时间</md-table-head> -->
-                <md-table-head md-sort-by="detail"  md-tooltip="detail?">细节</md-table-head>
-                
-                <!-- <md-table-head md-numeric >
-                <md-icon>message</md-icon>
-                <span>最新评论</span>
-                </md-table-head>-->
+                <md-table-head md-sort-by="detail"  md-tooltip="detail?">操作</md-table-head>
             </md-table-row>
             </md-table-header>
 
             <md-table-body>
             <md-table-row v-for="(row, rowIndex) in drafts" :key="rowIndex" :md-item="row">
-                <!--<md-table-cell v-for="(column, columnIndex) in row" :key="columnIndex" v-if="columnIndex !== 'type'">
-                {{ column }}
-                </md-table-cell>-->
                 <md-table-cell>
                   {{row.title}}
                 </md-table-cell>
@@ -40,9 +31,6 @@
                 <md-table-cell>
                   {{cut(row.content)}}
                 </md-table-cell>
-                <!-- <md-table-cell>
-                  {{row.submittime}}
-                </md-table-cell> -->
                 <md-button @click="deleteDraft(rowIndex)" class="md-raised md-primary">删除草稿</md-button>                
                 <md-button @click="loadDraft(rowIndex)" class="md-raised md-primary">修改草稿</md-button>
                 <md-button @click="draft2reviewpost(rowIndex)" class="md-raised md-primary">提交草稿</md-button>                
@@ -50,42 +38,6 @@
             </md-table-body>
         </md-table>
     </md-table-card>
-<!--
-    <md-table-card class="postsSpan">
-      <md-toolbar>
-        <h1 class="md-title">撰写草稿</h1>         
-      </md-toolbar>
-      <md-table>
-        <form novalidate @submit.stop.prevent="submit">
-          <md-input-container>
-            <label>title</label>
-            <md-input v-model="draft.title"></md-input>
-          </md-input-container>
-
-          <md-input-container>
-            <label>location</label>
-            <md-input v-model="draft.location"></md-input>
-          </md-input-container>
-
-          <md-input-container class="block">
-              <label>content</label>
-              <md-input v-model="draft.content"></md-input>
-          </md-input-container>
-
-          <md-input-container>
-            <label>username</label>
-            <md-input readonly v-model="draft.username"></md-input>
-          </md-input-container>
-
-          <md-input-container>
-            <label>author</label>
-            <md-input readonly v-model="draft.author"></md-input>
-          </md-input-container>
-        </form>
-      </md-table>
-    </md-table-card>
-
-    -->
           <md-dialog md-open-from="#custom" md-close-to="#custom" ref="dialogNew">
             <md-dialog-content class='dialogcontent'>
               <NewDraft v-on:closeDialog="newdraftEventEmitted" ref="NewDraft"></NewDraft>
@@ -96,8 +48,7 @@
               <OldDraft v-on:closeDialog="olddraftEventEmitted" ref="OldDraft"></OldDraft>
             </md-dialog-content>
           </md-dialog>
-          <!-- <md-button @click="init()">读取所有草稿</md-button> -->
-          <md-button @click="init()" class="md-raised md-primary">刷新</md-button>
+          <md-button @click="refresh()" class="md-raised md-primary">刷新</md-button>
           <md-button @click="newDraft()" class="md-raised md-primary">新的草稿</md-button>
           <loading ref="loading"></loading>
   </div>
@@ -134,16 +85,7 @@ export default {
       author: '',
       username: '',
     },
-    drafts: [
-      {
-        id: '',
-        title: '',
-        content: '',
-        location: '',
-        author: '',
-        username: '',
-      },
-    ],
+    drafts: [],
     draftExist: false,
   }),
   components: {
@@ -165,13 +107,19 @@ export default {
     closeDialog(ref) {
       this.$refs[ref].close();
     },
+    refresh() {
+      this.$refs.loading.open();
+      this.init();
+    },
     olddraftEventEmitted(status) {
       if (status === 'accepted') {
+        this.refresh();
         this.closeDialog('dialogOld');
       }
     },
     newdraftEventEmitted(status) {
       if (status === 'accepted') {
+        this.refresh();
         this.closeDialog('dialogNew');
       }
     },
@@ -186,8 +134,8 @@ export default {
     deleteDraft(rowIndex) {
       this.$refs.loading.open();
       deleteDraftPostReq(this.drafts[rowIndex].id).then(() => {
-        // this.searchForOwnerDraft();
         this.$refs.loading.close();
+        this.refresh();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
@@ -214,9 +162,6 @@ export default {
       this.searchForOwnerDraft();
     },
     init() {
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug(this.userInfo);
-      // this.initUser();
       this.searchForOwnerDraft();
       this.loadFirstDraft();
     },
@@ -228,10 +173,6 @@ export default {
       console.debug('change it to wzx');
     },
     loadFirstDraft() {
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug('this.draftE');
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug(this.draftExist);
       if (this.draftExist) {
         this.draft.title = this.drafts[0].title;
         this.draft.location = this.drafts[0].location;
@@ -280,37 +221,18 @@ export default {
                 username: res[i].username,
                 content: res[i].content,
               });
-              // print drafts
-              /* eslint no-console: ["error", { allow: ["debug"] }] */
-              console.debug(res[i].title);
-              /* eslint no-console: ["error", { allow: ["debug"] }] */
-              console.debug(res[i].location);
-              /* eslint no-console: ["error", { allow: ["debug"] }] */
-              console.debug(res[i].author);
-              /* eslint no-console: ["error", { allow: ["debug"] }] */
-              console.debug(res[i].username);
-              /* eslint no-console: ["error", { allow: ["debug"] }] */
-              console.debug(res[i].content);
               this.draftExist = true;
-              /* eslint no-console: ["error", { allow: ["debug"] }] */
-              console.debug(this.draftExist);
             }
           }
         }
-        // this.$refs.loading.close();
+        this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
-        // this.$refs.loading.close();
+        this.$refs.loading.close();
       });
     },
     loadDraft(rowIndex) {
-      // this.draft.title = this.drafts[rowIndex].title;
-      // this.draft.location = this.drafts[rowIndex].location;
-      // this.draft.author = this.drafts[rowIndex].author;
-      // this.draft.username = this.drafts[rowIndex].username;
-      // this.draft.content = this.drafts[rowIndex].content;
-      // this.draft.id = this.drafts[rowIndex].id;
       this.$refs.OldDraft.draft.id = this.drafts[rowIndex].id;
       this.$refs.OldDraft.draft.title = this.drafts[rowIndex].title;
       this.$refs.OldDraft.draft.location = this.drafts[rowIndex].location;
@@ -374,5 +296,15 @@ block {
 
 p {
   font-size: 120%;
+}
+
+.md-table .md-table-cell.md-has-action .md-table-cell-container {
+  justify-content: space-around;
+}
+.md-table .md-table-head {
+  text-align: center;
+}
+.md-table .md-table-cell {
+  text-align: center;
 }
 </style>
