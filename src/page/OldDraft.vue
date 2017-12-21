@@ -31,12 +31,15 @@
         <md-button @click="submitDraft()" class="md-raised md-primary">更新草稿</md-button>
         <!-- <md-button @click="close()">关闭</md-button> -->
       </md-card-content>
-    </md-card>  
+    </md-card>
+    <loading ref="loading"></loading>
   </div>
 </template>
 
 <script>
 import { updateDraftPostReq } from '@/service/index';
+import loading from '@/components/Loading';
+
 
 export default {
   data: () => ({
@@ -49,6 +52,9 @@ export default {
       username: '',
     },
   }),
+  components: {
+    loading,
+  },
   methods: {
     confirm() {
     },
@@ -56,7 +62,16 @@ export default {
     },
     submitDraft() {
       this.printDetail();
-      updateDraftPostReq(this.draft);
+      this.$refs.loading.open();
+      updateDraftPostReq(this.draft).then(() => {
+        // addDraft
+        this.$refs.loading.close();
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+        this.$refs.loading.close();
+      });
+      this.$emit('closeDialog', 'accepted');
     },
     printDetail() {
       // print drafts

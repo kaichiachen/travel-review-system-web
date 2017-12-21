@@ -88,17 +88,18 @@
     -->
           <md-dialog md-open-from="#custom" md-close-to="#custom" ref="dialogNew">
             <md-dialog-content class='dialogcontent'>
-              <NewDraft ref="NewDraft"></NewDraft>
+              <NewDraft v-on:closeDialog="newdraftEventEmitted" ref="NewDraft"></NewDraft>
             </md-dialog-content>
           </md-dialog>
           <md-dialog md-open-from="#custom" md-close-to="#custom" ref="dialogOld">
             <md-dialog-content class='dialogcontent'>
-              <OldDraft ref="OldDraft"></OldDraft>
+              <OldDraft v-on:closeDialog="olddraftEventEmitted" ref="OldDraft"></OldDraft>
             </md-dialog-content>
           </md-dialog>
           <!-- <md-button @click="init()">读取所有草稿</md-button> -->
           <md-button @click="init()" class="md-raised md-primary">刷新</md-button>
           <md-button @click="newDraft()" class="md-raised md-primary">新的草稿</md-button>
+          <loading ref="loading"></loading>
   </div>
 </template>
 
@@ -109,6 +110,7 @@ import { mapState } from 'vuex';
 import OldDraft from '@/page/OldDraft';
 import NewDraft from '@/page/NewDraft';
 import { draftListReq, updateDraftPostReq, addReviewPostReq, deleteDraftPostReq } from '@/service/index';
+import loading from '@/components/Loading';
 
 export default {
   data: () => ({
@@ -147,6 +149,7 @@ export default {
   components: {
     OldDraft,
     NewDraft,
+    loading,
   },
   computed: {
     ...mapState([
@@ -159,6 +162,19 @@ export default {
     this.init();
   },
   methods: {
+    closeDialog(ref) {
+      this.$refs[ref].close();
+    },
+    olddraftEventEmitted(status) {
+      if (status === 'accepted') {
+        this.closeDialog('dialogOld');
+      }
+    },
+    newdraftEventEmitted(status) {
+      if (status === 'accepted') {
+        this.closeDialog('dialogNew');
+      }
+    },
     showContent(rowIndex) {
       this.$refs.PostDetail.title = this.posts[rowIndex].title;
       this.$refs.PostDetail.location = this.posts[rowIndex].location;
@@ -168,15 +184,19 @@ export default {
       this.$refs.dialog.open();
     },
     deleteDraft(rowIndex) {
+      this.$refs.loading.open();
       deleteDraftPostReq(this.drafts[rowIndex].id).then(() => {
-        this.searchForOwnerDraft();
+        // this.searchForOwnerDraft();
+        this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        this.$refs.loading.close();
       });
-      // this.searchForOwnerDraft();
+      this.searchForOwnerDraft();
     },
     draft2reviewpost(rowIndex) {
+      this.$refs.loading.open();
       this.reviewpost.title = this.drafts[rowIndex].title;
       this.reviewpost.content = this.drafts[rowIndex].content;
       // this.reviewpost.time = Math.round(new Date() / 1000);
@@ -185,11 +205,13 @@ export default {
       this.reviewpost.author = this.drafts[rowIndex].author;
       addReviewPostReq(this.reviewpost);
       deleteDraftPostReq(this.drafts[rowIndex].id).then(() => {
-        this.searchForOwnerDraft();
+        this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        this.$refs.loading.close();
       });
+      this.searchForOwnerDraft();
     },
     init() {
       /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -239,6 +261,7 @@ export default {
       updateDraftPostReq(this.draft);
     },
     searchForOwnerDraft() {
+      // this.$refs.loading.open();
       draftListReq().then((success) => {
         if (success.Draftpost !== undefined) {
           this.drafts = [];
@@ -274,9 +297,11 @@ export default {
             }
           }
         }
+        // this.$refs.loading.close();
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
+        // this.$refs.loading.close();
       });
     },
     loadDraft(rowIndex) {

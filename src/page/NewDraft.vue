@@ -34,11 +34,13 @@
         <md-button @click="submitDraft()" class="md-raised md-primary">保存草稿</md-button>
     </md-card-header>
   </md-card>  
+  <loading ref="loading"></loading>
 </div>
 </template>
 
 <script>
 import { addDraftPostReq } from '@/service/index';
+import loading from '@/components/Loading';
 
 export default {
   data: () => ({
@@ -50,13 +52,27 @@ export default {
       username: ' ',
     },
   }),
+  components: {
+    loading,
+  },
   methods: {
     confirm() {
     },
     cancel() {
     },
     submitDraft() {
-      addDraftPostReq(this.draft);
+      this.$refs.loading.open();
+      addDraftPostReq(this.draft).then(() => {
+        // addDraft
+        this.$refs.loading.close();
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+        this.$refs.loading.close();
+      });
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug('new draft ready to emit to father window');
+      this.$emit('closeDialog', 'accepted');
     },
   },
 };
