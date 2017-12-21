@@ -44,6 +44,7 @@
 <script>
 import { addDraftPostReq } from '@/service/index';
 import loading from '@/components/Loading';
+import { KmpWithTextAndReturnReplaceText } from '@/config/utils';
 
 export default {
   data: () => ({
@@ -64,6 +65,7 @@ export default {
     cancel() {
     },
     submitDraft() {
+      this.draft.content = KmpWithTextAndReturnReplaceText(this.draft.content, '低端人口');
       this.$refs.loading.open();
       addDraftPostReq(this.draft).then(() => {
         // addDraft

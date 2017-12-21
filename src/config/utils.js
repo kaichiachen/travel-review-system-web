@@ -119,6 +119,8 @@ export const creteLsp = (target) => {
   }
   return lsp;
 };
+
+
 /* eslint arrow-body-style: ["error", "always"] */
 export const kmp = (text, target) => {
   let i;
@@ -160,8 +162,24 @@ export const replaceStr = (target, str, index) => {
   }
   // /* eslint no-console: ["error", { allow: ["debug"] }] */
   // console.debug(log);
-  const retString = target.substr(0, index).concat(saveWord);
-  retString.concat(target.substr(index + str.length, (target.length - index) + str.length));
+  let retString = target.substr(0, index).concat(saveWord);
+  const temp = target.substr(index + str.length, (target.length - index) + str.length);
+  retString = retString.concat(temp);
   return retString;
+};
+
+export const KmpWithTextAndReturnReplaceText = (originaltext, searchString) => {
+  let text = originaltext;
+  const lsp = kmp(text, searchString);
+  /* eslint no-console: ["error", { allow: ["debug"] }] */
+  console.debug(lsp);
+  if (lsp.length !== 0) {
+    for (let i = 0; i < lsp.length; i += 1) {
+      text = replaceStr(text, searchString, lsp[i]);
+    }
+  }
+  /* eslint no-console: ["error", { allow: ["debug"] }] */
+  console.debug(text);
+  return text;
 };
 
