@@ -129,7 +129,7 @@ export default {
           this.posts = [];
           const res = success.Post;
           for (let i = 0; i < res.length; i += 1) {
-            if (res[i].author === this.userInfo.username) {
+            if (res[i].author === this.userInfo.name) {
               this.posts.push({
                 title: res[i].title,
                 location: res[i].location,
@@ -141,8 +141,6 @@ export default {
             }
           }
           this.bst = makeBST(this.posts);
-          /* eslint no-console: ["error", { allow: ["debug"] }] */
-          console.debug(findPost(this.bst, 20170606));
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -150,8 +148,6 @@ export default {
       });
     },
     refreshPosts() {
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug(this.searchOption);
       switch (this.searchOption) {
         case '0': {
           const wd = new Date();
@@ -172,8 +168,6 @@ export default {
         case '2': {
           const yd = new Date();
           yd.setFullYear(yd.getFullYear() - 1);
-          /* eslint no-console: ["error", { allow: ["debug"] }] */
-          console.debug(yd.getFullYear());
           this.posts = findPost(this.bst, yd, this.searchString);
           break;
         }
