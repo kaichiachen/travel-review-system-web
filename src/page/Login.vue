@@ -41,12 +41,12 @@ export default {
       'RECORD_USERINFO',
     ]),
     login() {
-      this.$refs.loading.open();
       if (this.username == null || this.pwd == null) {
         this.$refs.snackbar.msg = '账号或密码不能为空！';
         this.$refs.snackbar.open();
         return;
       }
+      this.$refs.loading.open();
       loginReq(this.username, this.pwd).then((success) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         // console.debug(success.User);

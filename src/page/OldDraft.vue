@@ -12,16 +12,20 @@
             <md-input v-model="draft.title"></md-input>
           </md-input-container>
           <md-input-container>
-            <label>location</label>
-            <md-input v-model="draft.location"></md-input>
-          </md-input-container>
-          <md-input-container>
               <label>content</label>
               <md-textarea maxlength="1000" v-model="draft.content"></md-textarea>
           </md-input-container>
           <md-input-container>
-            <label>username</label>
-            <md-input readonly v-model="draft.username"></md-input>
+            <md-select
+              placeholder="选取地点"
+              v-model="draft.location"
+              style="margin-bottom: 10px;">
+              <md-option value="北京">北京</md-option>
+              <md-option value="上海">上海</md-option>
+              <md-option value="台湾">台湾</md-option>
+              <md-option value="纽约">纽约</md-option>
+              <md-option value="伦敦">伦敦</md-option>
+            </md-select>
           </md-input-container>
           <md-input-container>
             <label>author</label>

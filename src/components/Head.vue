@@ -55,6 +55,11 @@
               <md-icon>face</md-icon> <span>我的评论</span>
             </router-link>
           </md-list-item>
+          <md-list-item v-if="this.login && this.userinfo.role===3">
+            <router-link to="/draft" v-on:click.native="toggleLeftSidenav">
+              <md-icon>note_add</md-icon> <span>撰写文章</span>
+            </router-link>
+          </md-list-item>
         </md-list>
       </div>
     </md-sidenav>
