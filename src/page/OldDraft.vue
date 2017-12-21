@@ -22,7 +22,7 @@
               style="margin-bottom: 10px;">
               <md-option value="北京">北京</md-option>
               <md-option value="上海">上海</md-option>
-              <md-option value="台湾">台湾</md-option>
+              <md-option value="台北">台北</md-option>
               <md-option value="纽约">纽约</md-option>
               <md-option value="伦敦">伦敦</md-option>
             </md-select>
