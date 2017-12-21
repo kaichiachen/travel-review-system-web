@@ -96,3 +96,72 @@ export const findPost = (postBST, searchtime, searchString) => {
   postList.push(...findPost(postBST.left, searchtime, searchString));
   return postList;
 };
+
+
+export const creteLsp = (target) => {
+  const lsp = [];
+  let i;
+  let j;
+  lsp.push(0);
+  i = 1;
+  j = 0;
+  while (i < target.length) {
+    if (target[i] === target[j]) {
+      j += 1;
+      lsp[i] = j;
+      i += 1;
+    } else if (lsp[j] !== 0) {
+      j = lsp[j - 1];
+    } else {
+      lsp[i] = 0;
+      i += 1;
+    }
+  }
+  return lsp;
+};
+/* eslint arrow-body-style: ["error", "always"] */
+export const kmp = (text, target) => {
+  let i;
+  let j;
+  const lsp = creteLsp(target);
+  const ret = [];
+  i = 0;
+  j = 0;
+
+  if (!target.length || !text.length) {
+    return [];
+  }
+
+  while (i < text.length) {
+    if (text[i] === target[j]) {
+      if (j === (target.length - 1)) {
+        // console.log("targettern found at " + (i-j) + " -> " + target)
+        ret.push(i - j);
+        i += 1;
+        j = 0;
+      } else {
+        i += 1;
+        j += 1;
+      }
+    } else if (j === 0) {
+      i += 1;
+    } else {
+      j = lsp[j - 1];
+    }
+  }
+  /* eslint consistent-return: "error" */
+  return ret;
+};
+
+export const replaceStr = (target, str, index) => {
+  let saveWord = '*';
+  for (let i = 1; i < str.length; i += 1) {
+    saveWord += '*';
+  }
+  // /* eslint no-console: ["error", { allow: ["debug"] }] */
+  // console.debug(log);
+  const retString = target.substr(0, index).concat(saveWord);
+  retString.concat(target.substr(index + str.length, (target.length - index) + str.length));
+  return retString;
+};
+

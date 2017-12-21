@@ -3,13 +3,21 @@
     <md-table>
       <md-table-row>
         <md-table-cell>
-            <md-input-container>
-            <label>search me! </label>
+          <md-input-container md-clearable>
+            <label>全文检索</label>
             <md-input v-model="searchString"></md-input>
-            </md-input-container>
-            <md-button class="md-icon-button" @click="initPost()" ><label>复原</label></md-button>
-            <md-button class="md-icon-button" @click="refreshPosts()" >
-            <md-icon>search</md-icon></md-button>
+          </md-input-container>
+          <md-select
+            placeholder="选取时间范围"
+            v-model="searchOption">
+            <md-option value="0">一周前</md-option>
+            <md-option value="1">一个月前</md-option>
+            <md-option value="2">一年前</md-option>
+          </md-select>
+
+          <md-button class="md-icon-button" @click="refreshPosts()" >
+          <md-icon>search</md-icon></md-button>
+          <md-button class="md-icon-button" @click="initPost()" ><label>复原</label></md-button>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -23,7 +31,7 @@
             <md-table-header>
             <md-table-row>
                 <md-table-head md-sort-by="title" md-tooltip="the title of posts">游记题目</md-table-head>
-                <md-table-head md-sort-by="location" md-tooltip="post's location">location</md-table-head>
+                <md-table-head md-sort-by="location" md-tooltip="post's location">地点</md-table-head>
                 <md-table-head md-sort-by="author"  md-tooltip="author?">作者</md-table-head>
                 <md-table-head md-sort-by="content"  md-tooltip="content?">正文</md-table-head>
                 <md-table-head md-sort-by="submittime"  md-tooltip="submittime?">发表时间</md-table-head>
@@ -54,9 +62,9 @@
                   {{cut(row.content)}}
                 </md-table-cell>
                 <md-table-cell>
-                  {{row.submittime}}
+                  {{row.time}}
                 </md-table-cell>           
-                <md-button class="md-raised md-primary" @click="showContent(rowIndex)">showDetail</md-button>
+                <md-button class="md-primary" @click="showContent(rowIndex)">阅读全文</md-button>
             </md-table-row>
             </md-table-body>
         </md-table>
@@ -66,41 +74,33 @@
           </md-dialog-content>
        </md-dialog>
         </md-table-card>
-        
+    <loading ref="loading"></loading>
   </div>
 </template>
 
 <script>
 import snackbar from '@/components/SnackBar';
 import PostDetail from '@/page/PostDetail';
+import loading from '@/components/Loading';
 import { postListReq } from '@/service';
+import { makeBST, timeConverter, findPost } from '@/config/utils';
 import { mapState } from 'vuex';
-import { timeConverter } from '@/config/utils';
 
 export default {
   data: () => ({
     searchString: '',
-    user: {
-      username: '',
-      author: '',
-    },
     posts: [
-      {
-        title: '',
-        location: '',
-        author: '',
-        submittime: '',
-        content: '',
-      },
     ],
+    searchOption: -1,
+    bst: null,
   }),
   mounted() {
-    // this.initUser();
     this.initPost();
   },
   components: {
     snackbar,
     PostDetail,
+    loading,
   },
   computed: {
     ...mapState([
@@ -109,16 +109,11 @@ export default {
     ]),
   },
   methods: {
-    initUser() {
-      this.user.author = this.userInfo.name;
-      this.user.username = this.userInfo.username;
-      // this.user.username = 'wzx';
-    },
     showContent(rowIndex) {
       this.$refs.PostDetail.title = this.posts[rowIndex].title;
       this.$refs.PostDetail.location = this.posts[rowIndex].location;
       this.$refs.PostDetail.author = this.posts[rowIndex].author;
-      this.$refs.PostDetail.submittime = this.posts[rowIndex].submittime;
+      this.$refs.PostDetail.submittime = this.posts[rowIndex].time;
       this.$refs.PostDetail.content = this.posts[rowIndex].content;
       this.$refs.dialog.open();
     },
@@ -130,26 +125,24 @@ export default {
     },
     initPost() {
       postListReq().then((success) => {
-        /* eslint no-console: ["error", { allow: ["debug"] }] */
-        // console.debug(this.userInfo);
         if (success.Post !== undefined) {
           this.posts = [];
           const res = success.Post;
           for (let i = 0; i < res.length; i += 1) {
-            if (this.userInfo.username === res[i].author) {
-              let time = 0;
-              time = timeConverter(res[i].submittime);
+            if (res[i].author === this.userInfo.username) {
               this.posts.push({
                 title: res[i].title,
                 location: res[i].location,
                 author: res[i].author,
-                submittime: time,
+                submittime: res[i].submittime,
+                time: timeConverter(res[i].submittime),
                 content: res[i].content,
               });
-              /* eslint no-console: ["error", { allow: ["debug"] }] */
-              console.debug(time);
             }
           }
+          this.bst = makeBST(this.posts);
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(findPost(this.bst, 20170606));
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -157,48 +150,69 @@ export default {
       });
     },
     refreshPosts() {
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      // console.debug(this.userInfo);
-      postListReq().then((success) => {
-        if (this.searchString === '') return;
-        this.posts = [];
-        if (success.Post !== undefined) {
-          this.posts = [];
-          const res = success.Post;
-          for (let i = 0; i < res.length; i += 1) {
-            if (this.searchString === res[i].title || this.searchString === res[i].location) {
-              if (res[i].author === this.userInfo.username) {
-                let time = 0;
-                time = timeConverter(res[i].submittime);
-                this.posts.push({
-                  title: res[i].title,
-                  location: res[i].location,
-                  author: res[i].author,
-                  submittime: time,
-                  content: res[i].content,
-                });
-              }
-            }
-          }
+      switch (this.searchOption) {
+        case '0': {
+          const wd = new Date();
+          wd.setDate(wd.getDate() - 7);
+          this.posts = findPost(this.bst, wd, this.searchString);
+          break;
         }
-      }, (error) => {
-        /* eslint no-console: ["error", { allow: ["debug"] }] */
-        console.debug(error);
-      });
+        case '1': {
+          const md = new Date();
+          const m = md.getMonth();
+          md.setMonth(md.getMonth() - 1);
+          if (md.getMonth() === m) md.setDate(0);
+          md.setHours(0, 0, 0);
+          md.setMilliseconds(0);
+          this.posts = findPost(this.bst, md, this.searchString);
+          break;
+        }
+        case '2': {
+          const yd = new Date();
+          yd.setYear(yd.getYear() - 1);
+          this.posts = findPost(this.bst, yd, this.searchString);
+          break;
+        }
+        default: {
+          this.posts = findPost(this.bst, 0, this.searchString);
+          break;
+        }
+      }
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      // console.debug(this.searchOption);
+      // this.$refs.loading.open();
+      // postListReq().then((success) => {
+      //   if (this.searchString === '') return;
+      //   this.posts = [];
+      //   if (success.Post !== undefined) {
+      //     this.posts = [];
+      //     const res = success.Post;
+      //     for (let i = 0; i < res.length; i += 1) {
+      //       if (this.searchString === res[i].title || this.searchString === res[i].location) {
+      //         this.posts.push({
+      //           title: res[i].title,
+      //           location: res[i].location,
+      //           author: res[i].author,
+      //           time: timeConverter(res[i].submittime),
+      //           content: res[i].content,
+      //         });
+      //       }
+      //     }
+      //   }
+      //   this.$refs.loading.close();
+      // }, (error) => {
+      //   /* eslint no-console: ["error", { allow: ["debug"] }] */
+      //   console.debug(error);
+      //   this.$refs.loading.close();
+      // });
     },
   },
 };
 </script>
 
 <style>
-.postsSpan {
-  margin-top: 3%;
-  padding-top: 3%;
-  padding-bottom: 3%;
-  margin-left: 5%;
-  width: 90%;
-  border: 1px groove;
-  border-color: #cccccc;
+.postViewContainer{
+  width: 95%;
 }
 
 .postViewContainer {
@@ -209,6 +223,16 @@ export default {
 
 #spin {
   margin: 0 auto;
+}
+
+.md-table .md-table-cell.md-has-action .md-table-cell-container {
+  justify-content: space-around;
+}
+.md-table .md-table-head {
+  text-align: center;
+}
+.md-table .md-table-cell {
+  text-align: center;
 }
 
 p {
