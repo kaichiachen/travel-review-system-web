@@ -129,7 +129,7 @@ export default {
           this.posts = [];
           const res = success.Post;
           for (let i = 0; i < res.length; i += 1) {
-            if (res[i].author === this.userInfo.username) {
+            if (res[i].author === this.userInfo.name) {
               this.posts.push({
                 title: res[i].title,
                 location: res[i].location,
@@ -141,8 +141,6 @@ export default {
             }
           }
           this.bst = makeBST(this.posts);
-          /* eslint no-console: ["error", { allow: ["debug"] }] */
-          console.debug(findPost(this.bst, 20170606));
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
@@ -169,7 +167,7 @@ export default {
         }
         case '2': {
           const yd = new Date();
-          yd.setYear(yd.getYear() - 1);
+          yd.setFullYear(yd.getFullYear() - 1);
           this.posts = findPost(this.bst, yd, this.searchString);
           break;
         }
@@ -178,33 +176,6 @@ export default {
           break;
         }
       }
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      // console.debug(this.searchOption);
-      // this.$refs.loading.open();
-      // postListReq().then((success) => {
-      //   if (this.searchString === '') return;
-      //   this.posts = [];
-      //   if (success.Post !== undefined) {
-      //     this.posts = [];
-      //     const res = success.Post;
-      //     for (let i = 0; i < res.length; i += 1) {
-      //       if (this.searchString === res[i].title || this.searchString === res[i].location) {
-      //         this.posts.push({
-      //           title: res[i].title,
-      //           location: res[i].location,
-      //           author: res[i].author,
-      //           time: timeConverter(res[i].submittime),
-      //           content: res[i].content,
-      //         });
-      //       }
-      //     }
-      //   }
-      //   this.$refs.loading.close();
-      // }, (error) => {
-      //   /* eslint no-console: ["error", { allow: ["debug"] }] */
-      //   console.debug(error);
-      //   this.$refs.loading.close();
-      // });
     },
   },
 };

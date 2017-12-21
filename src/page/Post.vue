@@ -165,7 +165,7 @@ export default {
         }
         case '2': {
           const yd = new Date();
-          yd.setYear(yd.getYear() - 1);
+          yd.setFullYear(yd.getFullYear() - 1);
           this.posts = findPost(this.bst, yd, this.searchString);
           break;
         }

@@ -50,6 +50,12 @@
             </router-link>
           </md-list-item>
 
+          <md-list-item v-if="this.login">
+            <router-link to="/myposts" v-on:click.native="toggleLeftSidenav">
+              <md-icon>import_contacts</md-icon> <span>我的文章</span>
+            </router-link>
+          </md-list-item>
+
           <md-list-item v-if="this.login && this.userinfo.role===2 || this.userinfo.role===1">
             <router-link to="/myreview" v-on:click.native="toggleLeftSidenav">
               <md-icon>face</md-icon> <span>我的评论</span>
