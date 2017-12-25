@@ -33,9 +33,13 @@
             <md-table-header>
               <md-table-row>
                 <md-table-cell>
-                  <md-button class="md-primary" md-numeric @click="hotSort(1)">综合热度排序</md-button>
-                  <md-button class="md-primary" md-numeric @click="hotSort(2)">赞数排序</md-button>
-                  <md-button class="md-primary" md-numeric @click="hotSort(3)">阅读量排序</md-button> 
+                  <md-button class="md-primary" @click="hotSort(1)">综合排序</md-button>
+                </md-table-cell>    
+                <md-table-cell>
+                  <md-button class="md-primary" @click="hotSort(2)">赞数排序</md-button>
+                </md-table-cell>     
+                <md-table-cell>
+                  <md-button class="md-primary" @click="hotSort(3)">阅读量排序</md-button> 
                 </md-table-cell>               
               </md-table-row>
             <md-table-row>
@@ -91,7 +95,7 @@
 import snackbar from '@/components/SnackBar';
 import PostDetail from '@/page/PostDetail';
 import loading from '@/components/Loading';
-import { postListReq, zanListReq, updateZanReq, addZanReq } from '@/service';
+import { postListReq, zanListReq, updateZanReq, addZanReq, reviewPostListReq } from '@/service';
 import { makeBST, timeConverter, findPost } from '@/config/utils';
 
 export default {
@@ -104,6 +108,8 @@ export default {
     zans: [
     ],
     nowProccess: -1,
+    revpost: [
+    ],
   }),
   mounted() {
     this.initPost();
@@ -183,7 +189,24 @@ export default {
       console.debug(this.$refs.PostDetail.zanInfo.zan);
       /* eslint no-console: ["error", { allow: ["debug"] }] */
       console.debug(this.$refs.PostDetail.zanInfo.read);
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.revpost);
       this.$refs.dialog.open();
+    },
+    updateScore() {
+      for (let i = 0; i < this.posts.length; i += 1) {
+        this.posts[i].score = this.retScore(i);
+      }
+    },
+    retScore(index) {
+      for (let i = 0; i < this.zans.length; i += 1) {
+        if (this.posts[index].title === this.revpost[i].title) {
+          if (this.posts[index].author === this.revpost[i].author) {
+            return this.revpost[i].score;
+          }
+        }
+      }
+      return 0;
     },
     retReadZan(index) {
       for (let i = 0; i < this.zans.length; i += 1) {
@@ -214,7 +237,7 @@ export default {
       // return this.posts[index].author.length;
     },
     compareFunc(a, b) {
-      return b.hot - a.hot;
+      return (((b.hot * 0.5) + (b.score * 0.5)) - ((a.hot * 0.5) + (a.score * 0.5)));
     },
     hotSort(type) {
       if (type === 1) {
@@ -266,6 +289,30 @@ export default {
     initPost() {
       this.posts = [];
       this.zans = [];
+      reviewPostListReq().then((success) => {
+        if (success.Reviewpost !== undefined) {
+          this.revpost = [];
+          const res = success.Reviewpost;
+          for (let i = 0; i < res.length; i += 1) {
+            let scoret = 0;
+            if (res[i].reviewnum !== 0) {
+              scoret = res[i].count / res[i].reviewnum;
+            }
+            this.revpost.push({
+              title: res[i].title,
+              location: res[i].location,
+              author: res[i].author,
+              submittime: res[i].submittime,
+              content: res[i].content,
+              score: scoret,
+            });
+          }
+        }
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+        this.$refs.loading.close();
+      });
       postListReq().then((success) => {
         if (success.Post !== undefined) {
           this.posts = [];
@@ -279,6 +326,7 @@ export default {
               submittime: res[i].submittime,
               time: timeConverter(res[i].submittime),
               content: res[i].content,
+              score: -1,
               hot: 0,
             });
           }
@@ -308,6 +356,7 @@ export default {
         console.debug(error);
         this.$refs.loading.close();
       });
+      this.updateScore();
     },
     refreshPosts() {
       switch (this.searchOption) {
