@@ -17,9 +17,11 @@
 
           <md-button class="md-icon-button" @click="refreshPosts()" >
           <md-icon>search</md-icon></md-button>
-          <md-button class="md-icon-button" @click="reloadPost()" ><label>复原</label></md-button>
+          <md-button class="md-icon-button" @click="reloadPost()" ><label>刷新</label></md-button>
+          
         </md-table-cell>
       </md-table-row>
+      
     </md-table>
 
     <md-table-card>
@@ -29,6 +31,13 @@
 
         <md-table>
             <md-table-header>
+              <md-table-row>
+                <md-table-cell>
+                  <md-button class="md-primary" md-numeric @click="hotSort(1)">综合热度排序</md-button>
+                  <md-button class="md-primary" md-numeric @click="hotSort(2)">赞数排序</md-button>
+                  <md-button class="md-primary" md-numeric @click="hotSort(3)">阅读量排序</md-button> 
+                </md-table-cell>               
+              </md-table-row>
             <md-table-row>
                 <md-table-head md-sort-by="title" md-tooltip="the title of posts">游记题目</md-table-head>
                 <md-table-head md-sort-by="location" md-tooltip="post's location">地点</md-table-head>
@@ -82,7 +91,7 @@
 import snackbar from '@/components/SnackBar';
 import PostDetail from '@/page/PostDetail';
 import loading from '@/components/Loading';
-import { postListReq } from '@/service';
+import { postListReq, zanListReq, updateZanReq, addZanReq } from '@/service';
 import { makeBST, timeConverter, findPost } from '@/config/utils';
 
 export default {
@@ -92,6 +101,9 @@ export default {
     ],
     searchOption: -1,
     bst: null,
+    zans: [
+    ],
+    nowProccess: -1,
   }),
   mounted() {
     this.initPost();
@@ -101,7 +113,6 @@ export default {
     PostDetail,
     loading,
   },
-
   methods: {
     showContent(rowIndex) {
       this.$refs.PostDetail.title = this.posts[rowIndex].title;
@@ -109,9 +120,140 @@ export default {
       this.$refs.PostDetail.author = this.posts[rowIndex].author;
       this.$refs.PostDetail.submittime = this.posts[rowIndex].time;
       this.$refs.PostDetail.content = this.posts[rowIndex].content;
+      // zan and read
+      this.$refs.PostDetail.zanAlready = false;
+      let add = true;
+      for (let i = 0; i < this.zans.length; i += 1) {
+        if (this.posts[rowIndex].id === this.zans[i].postid) {
+          this.$refs.PostDetail.add = false;
+          this.$refs.PostDetail.zanInfo.postid = this.posts[rowIndex].id;
+          this.$refs.PostDetail.zanInfo.zanid = this.zans[i].zanid;
+          this.$refs.PostDetail.zanInfo.zan = this.zans[i].zan;
+          this.zans[i].read += 1;
+          this.$refs.PostDetail.zanInfo.read = this.zans[i].read;
+          add = false;
+          this.nowProccess = i;
+          break;
+        }
+      }
+      this.$refs.PostDetail.zanInfo.postid = this.posts[rowIndex].id;
+      if (add) {
+        this.$refs.PostDetail.add = true;
+        this.$refs.PostDetail.zanInfo.zan = 0;
+        this.$refs.PostDetail.zanInfo.read = 1;
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug('addZan in showContent ');
+        // get the id of zan
+        addZanReq(this.$refs.PostDetail.zanInfo).then((success) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(success);
+          this.$refs.PostDetail.zanInfo.zanid = success.id;
+          this.$refs.PostDetail.zanInfo.postid = success.post;
+          this.$refs.PostDetail.zanInfo.zan = success.zan;
+          this.$refs.PostDetail.zanInfo.read = success.read;
+          this.zans.push(this.$refs.PostDetail.zanInfo);
+          this.nowProccess = this.zans.length - 1;
+          // this.initPost();
+        }, (error) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(error);
+          this.initPost();
+        });
+      } else {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug('update in showContent');
+        updateZanReq(this.$refs.PostDetail.zanInfo).then((success) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(success);
+          // this.zans[this.nowProccess].read += 1;
+          // this.initPost();
+        }, (error) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(error);
+          this.initPost();
+        });
+      }
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.zans);
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.$refs.PostDetail.zanInfo.zanid);
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.$refs.PostDetail.zanInfo.postid);
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.$refs.PostDetail.zanInfo.zan);
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.$refs.PostDetail.zanInfo.read);
       this.$refs.dialog.open();
     },
+    retReadZan(index) {
+      for (let i = 0; i < this.zans.length; i += 1) {
+        if (this.posts[index].id === this.zans[i].postid) {
+          return (this.zans[i].read * 0.3) + (this.zans[i].zan * 0.7);
+        }
+      }
+      return 0;
+    },
+    retRead(index) {
+      for (let i = 0; i < this.zans.length; i += 1) {
+        if (this.posts[index].id === this.zans[i].postid) {
+          return this.zans[i].read;
+        }
+      }
+      return 0;
+    },
+    retZan(index) {
+      for (let i = 0; i < this.zans.length; i += 1) {
+        if (this.posts[index].id === this.zans[i].postid) {
+          return this.zans[i].zan;
+        }
+      }
+      return 0;
+    },
+    calHot(index) {
+      return this.posts[index].read + this.posts[index].zan;
+      // return this.posts[index].author.length;
+    },
+    compareFunc(a, b) {
+      return b.hot - a.hot;
+    },
+    hotSort(type) {
+      if (type === 1) {
+        for (let i = 0; i < this.posts.length; i += 1) {
+          this.posts[i].hot = this.retReadZan(i);
+        }
+      } else if (type === 2) {
+        for (let i = 0; i < this.posts.length; i += 1) {
+          this.posts[i].hot = this.retZan(i);
+        }
+      } else {
+        for (let i = 0; i < this.posts.length; i += 1) {
+          this.posts[i].hot = this.retRead(i);
+        }
+      }
+      // sort
+      this.posts = this.posts.sort(this.compareFunc);
+    },
+    // not yet using the closeDialog
     closeDialog(ref) {
+      if (!this.$refs.PostDetail.zanAlready) {
+        if (this.$refs.PostDetail.add) {
+          for (let i = 0; i < this.zans.length; i += 1) {
+            if (this.zans[i].id === this.this.$refs.PostDetail.zanInfo.zanid) {
+              this.zans[i].read += 1;
+              // if (this.$refs.PostDetail.add) {
+              this.zans[i].zan += 1;
+              // }
+              break;
+            }
+          }
+        }
+      }
+      this.$refs.PostDetail.zanInfo.postid = -1;
+      this.$refs.PostDetail.zanInfo.id = -1;
+      this.$refs.PostDetail.zanInfo.zan = -1;
+      this.$refs.PostDetail.zanInfo.read = -1;
+      this.$refs.PostDetail.add = true;
+      this.$refs.PostDetail.zanAlready = false;
       this.$refs[ref].close();
     },
     cut(content) {
@@ -122,22 +264,44 @@ export default {
       this.initPost();
     },
     initPost() {
+      this.posts = [];
+      this.zans = [];
       postListReq().then((success) => {
         if (success.Post !== undefined) {
           this.posts = [];
           const res = success.Post;
           for (let i = 0; i < res.length; i += 1) {
             this.posts.push({
+              id: res[i].id,
               title: res[i].title,
               location: res[i].location,
               author: res[i].author,
               submittime: res[i].submittime,
               time: timeConverter(res[i].submittime),
               content: res[i].content,
+              hot: 0,
             });
           }
           this.bst = makeBST(this.posts);
           this.$refs.loading.close();
+        }
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+        this.$refs.loading.close();
+      });
+      zanListReq().then((success) => {
+        if (success.Zan !== undefined) {
+          this.zans = [];
+          const res = success.Zan;
+          for (let i = 0; i < res.length; i += 1) {
+            this.zans.push({
+              zanid: res[i].id,
+              postid: res[i].postid,
+              zan: res[i].zan,
+              read: res[i].read,
+            });
+          }
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
