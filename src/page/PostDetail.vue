@@ -14,8 +14,8 @@
     </md-card-content>
   </md-card>  
     <div style="padding-top: 10px;">
-      <md-button class="md-primary" v-if="!zanAlready" @click="pressZan()"><md-icon v-if="!zanAlready" class="md-primary">thumb_up</md-icon>点赞</md-button>
-      <md-button v-if="zanAlready" ><md-icon v-if="zanAlready">thumb_up</md-icon>点赞</md-button>    
+      <md-button v-if="!zanAlready" @click="pressZan()"><md-icon v-if="!zanAlready" >thumb_up</md-icon>点赞</md-button>
+      <md-button v-if="zanAlready" class="md-primary"><md-icon class="md-primary" v-if="zanAlready">thumb_up</md-icon>已点赞</md-button>    
     </div>
 </div>
 </template>
