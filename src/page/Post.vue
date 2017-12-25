@@ -1,5 +1,6 @@
 <template>
   <div class="postViewContainer">
+    
     <md-table>
       <md-table-row>
         <md-table-cell>
@@ -21,8 +22,13 @@
           
         </md-table-cell>
       </md-table-row>
-      
     </md-table>
+
+    <div class="sort">
+      <md-button class="md-primary sortButton" @click="hotSort(1)">综合排序</md-button>
+      <md-button class="md-primary sortButton" @click="hotSort(2)">赞数排序</md-button>
+      <md-button class="md-primary sortButton" @click="hotSort(3)">阅读量排序</md-button> 
+    </div>
 
     <md-table-card>
         <md-toolbar>
@@ -30,18 +36,8 @@
         </md-toolbar>
 
         <md-table>
+              
             <md-table-header>
-              <md-table-row>
-                <md-table-cell>
-                  <md-button class="md-primary" @click="hotSort(1)">综合排序</md-button>
-                </md-table-cell>    
-                <md-table-cell>
-                  <md-button class="md-primary" @click="hotSort(2)">赞数排序</md-button>
-                </md-table-cell>     
-                <md-table-cell>
-                  <md-button class="md-primary" @click="hotSort(3)">阅读量排序</md-button> 
-                </md-table-cell>               
-              </md-table-row>
             <md-table-row>
                 <md-table-head md-sort-by="title" md-tooltip="the title of posts">游记题目</md-table-head>
                 <md-table-head md-sort-by="location" md-tooltip="post's location">地点</md-table-head>
@@ -404,6 +400,11 @@ export default {
   margin: 0 auto;
 }
 
+.sortButton {
+  width: 100px;
+  height: 30px;
+}
+
 #spin {
   margin: 0 auto;
 }
@@ -420,5 +421,9 @@ export default {
 
 p {
   font-size: 120%;
+}
+
+.sort{
+  margin-right: 0;
 }
 </style>
