@@ -127,6 +127,12 @@ export default {
   methods: {
     /* eslint no-unused-vars: ["error", { "args": "after-used" }] */
     addZanOwnerInfoInPost(zanOwnerInfo) {
+      for (let i = 0; i < this.zanOwners.length; i += 1) {
+        if (this.zans[i].postid === zanOwnerInfo.postid) {
+          this.zans[i].zan += 1;
+          break;
+        }
+      }
       const tempId = zanOwnerInfo.id;
       const temppostid = zanOwnerInfo.postid;
       const tempusername = zanOwnerInfo.username;
@@ -158,6 +164,12 @@ export default {
       console.debug(index);
       if (index !== -1) {
         this.zanOwners.splice(index, 1);
+      }
+      for (let i = 0; i < this.zanOwners.length; i += 1) {
+        if (this.zans[i].postid === zanOwnerInfo.postid) {
+          this.zans[index].zan -= 1;
+          break;
+        }
       }
     },
     addZanEmitted(zanOwnerInfo) {
