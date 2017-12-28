@@ -8,6 +8,10 @@
             <label>全文检索</label>
             <md-input v-model="searchString"></md-input>
           </md-input-container>
+          <md-input-container md-clearable>
+            <label>标签检索</label>
+            <md-input v-model="searchTag"></md-input>
+          </md-input-container>
           <md-select
             placeholder="选取时间范围"
             v-model="searchOption">
@@ -29,6 +33,7 @@
       <md-button class="md-primary sortButton" @click="hotSort(2)">赞数排序</md-button>
       <md-button class="md-primary sortButton" @click="hotSort(3)">阅读量排序</md-button> 
     </div>
+          
 
     <md-table-card>
         <md-toolbar>
@@ -109,6 +114,7 @@ export default {
     ],
     zanOwners: [
     ],
+    searchTag: '',
   }),
   mounted() {
     this.initPost();
@@ -437,6 +443,7 @@ export default {
               submittime: res[i].submittime,
               time: timeConverter(res[i].submittime),
               content: res[i].content,
+              tags: res[i].tags,
               score: -1,
               hot: 0,
             });

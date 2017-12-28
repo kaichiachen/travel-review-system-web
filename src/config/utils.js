@@ -83,17 +83,21 @@ const getPostList = (postList, postBST, searchtime) => {
   getPostList(postList, postBST.Right, searchtime);
 };
 
-export const findPost = (postBST, searchtime, searchString) => {
+export const findPost = (postBST, searchtime, searchString, tag) => {
   const postList = [];
   if (postBST === null) {
     return [];
   }
-  postList.push(...findPost(postBST.right, searchtime, searchString));
+  postList.push(...findPost(postBST.right, searchtime, searchString, tag));
   /* eslint no-console: ["error", { allow: ["debug"] }] */
   if (searchtime <= postBST.val.submittime && (searchString === '' || searchString === postBST.val.title || searchString === postBST.val.location)) {
-    postList.push(postBST.val);
+    for (let i = 0; i < postBST.val.tags.length; i += 1) {
+      if (tag === postBST.val.tags[i]) {
+        postList.push(postBST.val);
+      }
+    }
   }
-  postList.push(...findPost(postBST.left, searchtime, searchString));
+  postList.push(...findPost(postBST.left, searchtime, searchString, tag));
   return postList;
 };
 
