@@ -28,6 +28,7 @@ export const addDraftPostReq = postInfo => fetch('draftpost',
     location: postInfo.location,
     author: postInfo.author,
     username: postInfo.username,
+    tags: postInfo.tags.join(','),
   }, 'POST',
 );
 
@@ -38,6 +39,7 @@ export const updateDraftPostReq = postInfo => fetch(`draftpost/${postInfo.id}`,
     location: postInfo.location,
     author: postInfo.author,
     username: postInfo.username,
+    tags: postInfo.tags.join(','),
   }, 'PUT',
 );
 

@@ -33,6 +33,7 @@
             <label>作者</label>
             <md-input readonly v-model="draft.author"></md-input>
           </md-input-container>
+          <md-chips v-model="draft.tags" md-input-placeholder="添加标签"></md-chips>
         </form>
         <md-button @click="submitDraft()" class="md-raised md-primary">保存草稿</md-button>
     </md-card-header>
@@ -54,6 +55,7 @@ export default {
       content: ' ',
       author: ' ',
       username: ' ',
+      tags: [],
     },
     invalidWords: [
       '低端人口',
@@ -74,14 +76,15 @@ export default {
       addDraftPostReq(this.draft).then(() => {
         // addDraft
         this.$refs.loading.close();
+        this.$emit('closeDialog', 'accepted');
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
         this.$refs.loading.close();
+        this.$emit('closeDialog', 'accepted');
       });
       /* eslint no-console: ["error", { allow: ["debug"] }] */
       console.debug('new draft ready to emit to father window');
-      this.$emit('closeDialog', 'accepted');
     },
   },
 };
