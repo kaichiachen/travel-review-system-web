@@ -85,23 +85,23 @@ export default {
     processPost(post) {
       let ret = '<Description postid=';
       ret = ret.concat(post.id);
-      ret = ret.concat('> &nbsp');
+      // ret = ret.concat('> &nbsp');
       ret = ret.concat('<title>');
       ret = ret.concat(post.title);
-      ret = ret.concat('</title> &nbsp');
+      ret = ret.concat('</title>');
       ret = ret.concat('<location>');
       ret = ret.concat(post.location);
-      ret = ret.concat('</location> &nbsp');
+      ret = ret.concat('</location>');
       ret = ret.concat('<author>');
       ret = ret.concat(post.author);
-      ret = ret.concat('</author> &nbsp');
+      ret = ret.concat('</author>');
       ret = ret.concat('<submittime>');
       ret = ret.concat(post.submittime);
-      ret = ret.concat('</submittime> &nbsp');
+      ret = ret.concat('</submittime>');
       ret = ret.concat('<content>');
       ret = ret.concat(post.content);
-      ret = ret.concat('</content> &nbsp');
-      ret = ret.concat('</Description> &nbsp');
+      ret = ret.concat('</content>');
+      ret = ret.concat('</Description>');
       return ret;
     },
     /* eslint no-unused-vars: ["error", { "args": "after-used" }] */
@@ -109,22 +109,16 @@ export default {
     makeRDF() {
       const now = new Date();
       const time = timeConverter(now);
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug(this.posts);
       let tempString = '';
       for (let i = 0; i < this.posts.length; i += 1) {
         tempString = tempString.concat(this.processPost(this.posts[i]));
       }
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug(tempString);
       this.files.push({
         storetime: time,
         content: tempString,
       });
     },
     showContent(rowIndex) {
-      /* eslint no-console: ["error", { allow: ["debug"] }] */
-      console.debug(this.files);
       this.$refs.RDFDetail.storetime = this.files[rowIndex].storetime;
       this.$refs.RDFDetail.content = this.files[rowIndex].content;
       this.$refs.dialog.open();

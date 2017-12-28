@@ -2,7 +2,13 @@ import baseUrl from './env';
 
 export default async (router = '', data = {}, method = 'GET', type = 'json') => {
   const reqMethod = method.toUpperCase();
-  const reqUrl = baseUrl + router;
+  let bu = baseUrl;
+  if (router === 'article') {
+    bu = 'http://localhost:8081/';
+  }
+  const reqUrl = bu + router;
+  /* eslint no-console: ["error", { allow: ["debug"] }] */
+  console.debug(reqUrl);
   const requestConfig = {
     method: reqMethod,
     headers: {
@@ -27,6 +33,8 @@ export default async (router = '', data = {}, method = 'GET', type = 'json') => 
     /* eslint no-empty: "error" */
   }
   return new Promise((resolve, reject) => {
+    /* eslint no-console: ["error", { allow: ["debug"] }] */
+    console.debug(response);
     if (response.status === 200) {
       resolve(responseJson);
     } else {

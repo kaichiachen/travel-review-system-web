@@ -151,3 +151,10 @@ export const addzanOwnerReq = zanInfo => fetch('Zaninfo',
 export const deletezanOwnerReq = postid => fetch(`Zaninfo/${postid}`,
   {}, 'DELETE',
 );
+
+// get rdf
+export const postContentReq = rdfContent => fetch('article',
+  {
+    content: rdfContent,
+  }, 'POST',
+);
