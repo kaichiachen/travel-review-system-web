@@ -84,6 +84,7 @@ export default {
       location: '',
       author: '',
       username: '',
+      tags: [],
     },
     drafts: [],
     draftExist: false,
@@ -151,15 +152,21 @@ export default {
       this.reviewpost.time = Math.round(new Date());
       this.reviewpost.location = this.drafts[rowIndex].location;
       this.reviewpost.author = this.drafts[rowIndex].author;
-      addReviewPostReq(this.reviewpost);
-      deleteDraftPostReq(this.drafts[rowIndex].id).then(() => {
-        this.$refs.loading.close();
+      this.reviewpost.tags = this.drafts[rowIndex].tags;
+      addReviewPostReq(this.reviewpost).then(() => {
+        deleteDraftPostReq(this.drafts[rowIndex].id).then(() => {
+          this.$refs.loading.close();
+          this.searchForOwnerDraft();
+        }, (error) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(error);
+          this.$refs.loading.close();
+        });
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
         this.$refs.loading.close();
       });
-      this.searchForOwnerDraft();
     },
     init() {
       this.searchForOwnerDraft();
@@ -213,14 +220,20 @@ export default {
               console.debug('heres the draft id');
               /* eslint no-console: ["error", { allow: ["debug"] }] */
               console.debug(res[i].id);
-              this.drafts.push({
+              const node = {
                 id: res[i].id,
                 title: res[i].title,
                 location: res[i].location,
                 author: res[i].author,
                 username: res[i].username,
                 content: res[i].content,
-              });
+              };
+              if (res[i].tags !== undefined) {
+                node.tags = res[i].tags.split(',');
+              } else {
+                node.tags = [];
+              }
+              this.drafts.push(node);
               this.draftExist = true;
             }
           }
@@ -237,6 +250,7 @@ export default {
       this.$refs.OldDraft.draft.title = this.drafts[rowIndex].title;
       this.$refs.OldDraft.draft.location = this.drafts[rowIndex].location;
       this.$refs.OldDraft.draft.content = this.drafts[rowIndex].content;
+      this.$refs.OldDraft.draft.tags = this.drafts[rowIndex].tags;
       this.$refs.OldDraft.draft.author = this.userInfo.name;
       this.$refs.OldDraft.draft.username = this.userInfo.username;
       this.$refs.dialogOld.open();
@@ -247,6 +261,7 @@ export default {
       this.$refs.NewDraft.draft.title = '';
       this.$refs.NewDraft.draft.content = '';
       this.$refs.NewDraft.draft.location = '';
+      this.$refs.NewDraft.draft.tags = [];
       this.$refs.dialogNew.open();
     },
     submitPost() {

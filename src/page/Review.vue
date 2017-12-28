@@ -163,8 +163,8 @@ export default {
           const res = success.Reviewpost;
           this.allreviews = [];
           for (let i = 0; i < res.length; i += 1) {
-            if ((this.userInfo.role === 2 && res[i].status === 0)
-            || (this.userInfo.role === 1 && res[i].status === 1)) {
+            if ((this.userInfo.role === 2 && res[i].status === 0 && res[i].reviewnum < 5)
+            || (this.userInfo.role === 1 && res[i].status === 1 && res[i].reviewnum < 3)) {
               res[i].submittime = timeConverter(res[i].submittime);
               this.allreviews.push(res[i]);
             }
@@ -199,6 +199,14 @@ export default {
           }
         }
       }
+      for (let i = 0; i < this.myreviews.length; i += 1) {
+        if (this.myreviews[i].posttitle === undefined) {
+          this.myreviews.splice(i, 1);
+          i = -1;
+        }
+      }
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.myreviews);
     },
     closeDialog(ref) {
       this.$refs[ref].close();
@@ -233,7 +241,7 @@ export default {
 };
 </script>
 
-<<style>
+<style>
 .reviewContainer {
     margin-top: 1%;
     padding-top: 1%;

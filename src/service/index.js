@@ -28,6 +28,7 @@ export const addDraftPostReq = postInfo => fetch('draftpost',
     location: postInfo.location,
     author: postInfo.author,
     username: postInfo.username,
+    tags: postInfo.tags.join(','),
   }, 'POST',
 );
 
@@ -38,6 +39,7 @@ export const updateDraftPostReq = postInfo => fetch(`draftpost/${postInfo.id}`,
     location: postInfo.location,
     author: postInfo.author,
     username: postInfo.username,
+    tags: postInfo.tags.join(','),
   }, 'PUT',
 );
 
@@ -60,6 +62,7 @@ export const addReviewPostReq = postInfo => fetch('reviewpost',
     submittime: postInfo.time,
     location: postInfo.location,
     author: postInfo.author,
+    tags: postInfo.tags.join(','),
     count: 0,
     status: 0,
     reviewnum: 0,
