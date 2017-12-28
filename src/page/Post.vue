@@ -23,7 +23,7 @@
           <md-button class="md-icon-button" @click="refreshPosts()" >
           <md-icon>search</md-icon></md-button>
           <md-button class="md-icon-button" @click="reloadPost()" ><label>刷新</label></md-button>
-          
+          <md-button class="md-icon-button" @click="checkPost()" ><label>checkPost</label></md-button>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -77,7 +77,10 @@
                 </md-table-cell>
                 <md-table-cell>
                   {{row.time}}
-                </md-table-cell>           
+                </md-table-cell>   
+                <md-table-cell>
+                  {{row.tags}}
+                </md-table-cell>         
                 <md-button class="md-primary" @click="showContent(rowIndex)">阅读全文</md-button>
             </md-table-row>
             </md-table-body>
@@ -131,6 +134,10 @@ export default {
     ]),
   },
   methods: {
+    checkPost() {
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.posts);
+    },
     /* eslint no-unused-vars: ["error", { "args": "after-used" }] */
     addZanOwnerInfoInPost(zanOwnerInfo) {
       for (let i = 0; i < this.zanOwners.length; i += 1) {
@@ -430,11 +437,18 @@ export default {
         console.debug(error);
         this.$refs.loading.close();
       });
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug('post is comming');
       postListReq().then((success) => {
         if (success.Post !== undefined) {
           this.posts = [];
           const res = success.Post;
           for (let i = 0; i < res.length; i += 1) {
+            const ts = res[i].tags;
+            let tempTags = [];
+            if (ts !== undefined) {
+              tempTags = ts.split(',');
+            }
             this.posts.push({
               id: res[i].id,
               title: res[i].title,
@@ -443,7 +457,7 @@ export default {
               submittime: res[i].submittime,
               time: timeConverter(res[i].submittime),
               content: res[i].content,
-              tags: res[i].tags,
+              tags: tempTags,
               score: -1,
               hot: 0,
             });
@@ -475,13 +489,15 @@ export default {
         this.$refs.loading.close();
       });
       this.updateScore();
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.posts);
     },
     refreshPosts() {
       switch (this.searchOption) {
         case '0': {
           const wd = new Date();
           wd.setDate(wd.getDate() - 7);
-          this.posts = findPost(this.bst, wd, this.searchString);
+          this.posts = findPost(this.bst, wd, this.searchString, this.searchTag);
           break;
         }
         case '1': {
@@ -491,17 +507,17 @@ export default {
           if (md.getMonth() === m) md.setDate(0);
           md.setHours(0, 0, 0);
           md.setMilliseconds(0);
-          this.posts = findPost(this.bst, md, this.searchString);
+          this.posts = findPost(this.bst, md, this.searchString, this.searchTag);
           break;
         }
         case '2': {
           const yd = new Date();
           yd.setFullYear(yd.getFullYear() - 1);
-          this.posts = findPost(this.bst, yd, this.searchString);
+          this.posts = findPost(this.bst, yd, this.searchString, this.searchTag);
           break;
         }
         default: {
-          this.posts = findPost(this.bst, 0, this.searchString);
+          this.posts = findPost(this.bst, 0, this.searchString, this.searchTag);
           break;
         }
       }

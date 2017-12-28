@@ -98,6 +98,8 @@ export const findPost = (postBST, searchtime, searchString, tag) => {
     }
   }
   postList.push(...findPost(postBST.left, searchtime, searchString, tag));
+  /* eslint no-console: ["error", { allow: ["debug"] }] */
+  console.debug(postBST);
   return postList;
 };
 
