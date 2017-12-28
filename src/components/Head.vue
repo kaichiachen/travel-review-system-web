@@ -50,6 +50,12 @@
             </router-link>
           </md-list-item>
 
+          <md-list-item v-if="this.login && this.userinfo.role===0">
+            <router-link to="/rdf" v-on:click.native="toggleLeftSidenav">
+              <md-icon>description</md-icon> <span>文章存档</span>
+            </router-link>
+          </md-list-item>
+
           <md-list-item v-if="this.login && this.userinfo.role===3">
             <router-link to="/myposts" v-on:click.native="toggleLeftSidenav">
               <md-icon>import_contacts</md-icon> <span>我的文章</span>

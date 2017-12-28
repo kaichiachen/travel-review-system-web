@@ -23,7 +23,6 @@
           <md-button class="md-icon-button" @click="refreshPosts()" >
           <md-icon>search</md-icon></md-button>
           <md-button class="md-icon-button" @click="reloadPost()" ><label>刷新</label></md-button>
-          <md-button class="md-icon-button" @click="checkPost()" ><label>checkPost</label></md-button>
         </md-table-cell>
       </md-table-row>
     </md-table>

@@ -135,14 +135,14 @@ export default {
     },
     linkToReview() {
       if (this.login) {
-        this.$router.push('/review/new');
+        this.$router.push('/myreview');
       } else {
         this.openDialog('dialog', 'login');
       }
     },
     linkToPost() {
       if (this.login) {
-        this.$router.push('/post/new');
+        this.$router.push('/draft');
       } else {
         this.openDialog('dialog', 'login');
       }
