@@ -152,15 +152,21 @@ export default {
       this.reviewpost.time = Math.round(new Date());
       this.reviewpost.location = this.drafts[rowIndex].location;
       this.reviewpost.author = this.drafts[rowIndex].author;
-      addReviewPostReq(this.reviewpost);
-      deleteDraftPostReq(this.drafts[rowIndex].id).then(() => {
-        this.$refs.loading.close();
+      this.reviewpost.tags = this.drafts[rowIndex].tags;
+      addReviewPostReq(this.reviewpost).then(() => {
+        deleteDraftPostReq(this.drafts[rowIndex].id).then(() => {
+          this.$refs.loading.close();
+          this.searchForOwnerDraft();
+        }, (error) => {
+          /* eslint no-console: ["error", { allow: ["debug"] }] */
+          console.debug(error);
+          this.$refs.loading.close();
+        });
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
         console.debug(error);
         this.$refs.loading.close();
       });
-      this.searchForOwnerDraft();
     },
     init() {
       this.searchForOwnerDraft();

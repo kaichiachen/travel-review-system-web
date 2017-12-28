@@ -171,6 +171,7 @@ export default {
           submittime: info.submittime,
           location: info.location,
           author: info.author,
+          tags: info.tags,
         }).then(() => {
         }, (error) => {
           /* eslint no-console: ["error", { allow: ["debug"] }] */
