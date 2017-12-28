@@ -79,7 +79,7 @@
         </md-table>
         <md-dialog md-open-from="#custom" md-close-to="#custom" ref="dialog">
           <md-dialog-content class='dialogcontent'>
-            <PostDetail ref="PostDetail"></PostDetail>
+            <PostDetail v-on:addZan="addZanEmitted" ref="PostDetail"></PostDetail>
           </md-dialog-content>
        </md-dialog>
         </md-table-card>
@@ -91,8 +91,9 @@
 import snackbar from '@/components/SnackBar';
 import PostDetail from '@/page/PostDetail';
 import loading from '@/components/Loading';
-import { postListReq, zanListReq, updateZanReq, addZanReq, reviewPostListReq } from '@/service';
+import { postListReq, zanListReq, updateZanReq, addZanReq, reviewPostListReq, zanOwnerListReq } from '@/service';
 import { makeBST, timeConverter, findPost } from '@/config/utils';
+import { mapState } from 'vuex';
 
 export default {
   data: () => ({
@@ -106,6 +107,8 @@ export default {
     nowProccess: -1,
     revpost: [
     ],
+    zanOwners: [
+    ],
   }),
   mounted() {
     this.initPost();
@@ -115,7 +118,91 @@ export default {
     PostDetail,
     loading,
   },
+  computed: {
+    ...mapState([
+      'userInfo',
+      'login',
+    ]),
+  },
   methods: {
+    /* eslint no-unused-vars: ["error", { "args": "after-used" }] */
+    addZanOwnerInfoInPost(zanOwnerInfo) {
+      for (let i = 0; i < this.zanOwners.length; i += 1) {
+        if (this.zans[i].postid === zanOwnerInfo.postid) {
+          this.zans[i].zan += 1;
+          break;
+        }
+      }
+      const tempId = zanOwnerInfo.id;
+      const temppostid = zanOwnerInfo.postid;
+      const tempusername = zanOwnerInfo.username;
+      this.zanOwners.push({
+        id: tempId,
+        postid: temppostid,
+        username: tempusername,
+      });
+    },
+    /* eslint no-unused-vars: ["error", { "args": "none" }] */
+    deleteZanOwnerInfoInPost(zanOwnerInfo) {
+      let index = -1;
+      // const zo = this.$refs.Post.zanOwners;
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug('this.zanOwnerInfo.username');
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      // console.debug(this.zanOwnerInfo);
+      for (let i = 0; i < this.zanOwners.length; i += 1) {
+        if (this.zanOwners[i].postid === zanOwnerInfo.postid) {
+          if (this.zanOwners[i].username === zanOwnerInfo.username) {
+            index = i;
+            break;
+          }
+        }
+      }
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug('index gonna del');
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(index);
+      if (index !== -1) {
+        this.zanOwners.splice(index, 1);
+      }
+      for (let i = 0; i < this.zanOwners.length; i += 1) {
+        if (this.zans[i].postid === zanOwnerInfo.postid) {
+          this.zans[index].zan -= 1;
+          break;
+        }
+      }
+    },
+    addZanEmitted(zanOwnerInfo) {
+      if (zanOwnerInfo.aord === 'add') {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug('decide add');
+        this.addZanOwnerInfoInPost(zanOwnerInfo);
+      } else {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug('decide del');
+        this.deleteZanOwnerInfoInPost(zanOwnerInfo);
+      }
+    },
+    checkAlreadZan(rowIndex) {
+      for (let i = 0; i < this.zanOwners.length; i += 1) {
+        if (this.posts[rowIndex].id === this.zanOwners[i].postid) {
+          if (this.zanOwners[i].username === this.userInfo.username) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+    findZanOwnerId(rowIndex) {
+      for (let i = 0; i < this.zanOwners.length; i += 1) {
+        if (this.posts[rowIndex].id === this.zanOwners[i].postid) {
+          if (this.zanOwners[i].username === this.userInfo.username) {
+            return this.zanOwners[i].id;
+          }
+        }
+      }
+      return -1;
+    },
     showContent(rowIndex) {
       this.$refs.PostDetail.title = this.posts[rowIndex].title;
       this.$refs.PostDetail.location = this.posts[rowIndex].location;
@@ -123,7 +210,14 @@ export default {
       this.$refs.PostDetail.submittime = this.posts[rowIndex].time;
       this.$refs.PostDetail.content = this.posts[rowIndex].content;
       // zan and read
-      this.$refs.PostDetail.zanAlready = false;
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.zanOwners);
+      // this.$refs.PostDetail.zanAlready = false;
+      this.$refs.PostDetail.zanOwnerInfo.username = this.userInfo.username;
+      /* eslint no-console: ["error", { allow: ["debug"] }] */
+      console.debug(this.posts[rowIndex].id);
+      this.$refs.PostDetail.zanAlready = this.checkAlreadZan(rowIndex);
+      this.$refs.PostDetail.zanOwnerInfo.id = this.findZanOwnerId(rowIndex);
       let add = true;
       for (let i = 0; i < this.zans.length; i += 1) {
         if (this.posts[rowIndex].id === this.zans[i].postid) {
@@ -188,7 +282,9 @@ export default {
       /* eslint no-console: ["error", { allow: ["debug"] }] */
       console.debug(this.revpost);
       this.$refs.dialog.open();
+      // this.initPost();
     },
+    // -------------------- sorting start----------------------
     updateScore() {
       for (let i = 0; i < this.posts.length; i += 1) {
         this.posts[i].score = this.retScore(i);
@@ -252,6 +348,7 @@ export default {
       // sort
       this.posts = this.posts.sort(this.compareFunc);
     },
+    // -------------------- sorting end----------------------
     // not yet using the closeDialog
     closeDialog(ref) {
       if (!this.$refs.PostDetail.zanAlready) {
@@ -285,6 +382,7 @@ export default {
     initPost() {
       this.posts = [];
       this.zans = [];
+      this.zanOwners = [];
       reviewPostListReq().then((success) => {
         if (success.Reviewpost !== undefined) {
           this.revpost = [];
@@ -301,6 +399,23 @@ export default {
               submittime: res[i].submittime,
               content: res[i].content,
               score: scoret,
+            });
+          }
+        }
+      }, (error) => {
+        /* eslint no-console: ["error", { allow: ["debug"] }] */
+        console.debug(error);
+        this.$refs.loading.close();
+      });
+      zanOwnerListReq().then((success) => {
+        if (success.Zaninfo !== undefined) {
+          this.zanOwners = [];
+          const res = success.Zaninfo;
+          for (let i = 0; i < res.length; i += 1) {
+            this.zanOwners.push({
+              id: res[i].id,
+              postid: res[i].postid,
+              username: res[i].username,
             });
           }
         }

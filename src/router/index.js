@@ -9,6 +9,7 @@ import Review from '@/page/Review';
 import User from '@/page/User';
 import NewPost from '@/page/NewPost';
 import MyPost from '@/page/MyPost';
+import StoreInRDF from '@/page/StoreInRDF';
 
 Vue.use(Router);
 
@@ -54,6 +55,10 @@ export default new Router({
       {
         path: '/myposts',
         component: MyPost,
+      },
+      {
+        path: '/rdf',
+        component: StoreInRDF,
       },
     ],
   }],

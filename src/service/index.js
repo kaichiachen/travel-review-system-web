@@ -134,3 +134,19 @@ export const updateZanReq = zanInfo => fetch(`zan/${zanInfo.zanid}`,
 export const deleteZanReq = reviewid => fetch(`zan/${reviewid}`,
   {}, 'DELETE',
 );
+
+// zanOwner-wait to edit
+export const zanOwnerListReq = () => fetch('Zaninfo',
+  {}, 'GET',
+);
+
+export const addzanOwnerReq = zanInfo => fetch('Zaninfo',
+  {
+    postid: zanInfo.postid,
+    username: zanInfo.username,
+  }, 'POST',
+);
+
+export const deletezanOwnerReq = postid => fetch(`Zaninfo/${postid}`,
+  {}, 'DELETE',
+);
