@@ -4,10 +4,11 @@
     <md-card-header>
         <div class="time">生成时间：{{storetime}}</div>
     </md-card-header>
-    <md-button class="md-primary" @click="downloadRDF()">下载</md-button>
+    <md-button class="md-primary" @click="downloadRDF()">生成下载链接</md-button>
+    <a :href = "url">下载：{{url}}</a>
 
     <md-card-content>
-        {{ content}}
+        {{ content }}
     </md-card-content>
   </md-card>  
 </div>
@@ -21,8 +22,12 @@ export default {
   data: () => ({
     storetime: '',
     content: '',
+    url: '',
   }),
   components: {
+  },
+  mounted() {
+    this.downloadRDF();
   },
   methods: {
     downloadRDF() {
@@ -41,7 +46,8 @@ export default {
         if (success.url !== undefined) {
           /* eslint no-console: ["error", { allow: ["debug"] }] */
           console.debug(success);
-          this.$router.push(success.url);
+          // this.$router.push(success.url);
+          this.url = success.url;
         }
       }, (error) => {
         /* eslint no-console: ["error", { allow: ["debug"] }] */
