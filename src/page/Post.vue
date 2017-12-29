@@ -48,7 +48,8 @@
                 <md-table-head md-sort-by="author"  md-tooltip="author?">作者</md-table-head>
                 <md-table-head md-sort-by="content"  md-tooltip="content?">正文</md-table-head>
                 <md-table-head md-sort-by="submittime"  md-tooltip="submittime?">发表时间</md-table-head>
-                <md-table-head md-sort-by="detail"  md-tooltip="detail?">细节</md-table-head>
+                <md-table-head md-sort-by="detail"  md-tooltip="detail?">标签</md-table-head>
+                <md-table-head md-sort-by="detail"  md-tooltip="detail?">操作</md-table-head>
                 
                 <!-- <md-table-head md-numeric >
                 <md-icon>message</md-icon>
@@ -78,7 +79,9 @@
                   {{row.time}}
                 </md-table-cell>   
                 <md-table-cell>
-                  {{row.tags}}
+                  <md-chip v-for="(item, itemIndex) in row.tags" :key="itemIndex" :md-item="item">
+                    #{{row.tags[itemIndex]}}
+                  </md-chip>
                 </md-table-cell>         
                 <md-button class="md-primary" @click="showContent(rowIndex)">阅读全文</md-button>
             </md-table-row>
