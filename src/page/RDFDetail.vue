@@ -5,7 +5,8 @@
         <div class="time">生成时间：{{storetime}}</div>
     </md-card-header>
     <md-button class="md-primary" @click="downloadRDF()">生成下载链接</md-button>
-    <a :href = "url">下载：{{url}}</a>
+    <md-button class="md-primary">下载链接：<a :href = "url">{{url}}</a></md-button>
+    <!-- <a :href = "url">下载：{{url}}</a> -->
 
     <md-card-content>
         {{ content }}
