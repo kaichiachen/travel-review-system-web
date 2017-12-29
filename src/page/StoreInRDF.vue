@@ -18,7 +18,8 @@
             <md-table-header>
             <md-table-row>
                 <md-table-head md-sort-by="title" md-tooltip="store time">存档时间</md-table-head>
-                <md-table-head md-sort-by="location" md-tooltip="rdf">游记存档内容</md-table-head>
+                <md-table-head md-sort-by="content" md-tooltip="rdf">游记存档内容</md-table-head>
+                <md-table-head md-sort-by="detail" md-tooltip="rdf">详细内容</md-table-head>
             </md-table-row>
             </md-table-header>
 
