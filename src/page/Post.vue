@@ -8,7 +8,7 @@
             <label>全文检索</label>
             <md-input v-model="searchString"></md-input>
           </md-input-container>
-          <md-input-container md-clearable>
+          <md-input-container md-clearable style="margin-left: 10px;">
             <label>标签检索</label>
             <md-input v-model="searchTag"></md-input>
           </md-input-container>

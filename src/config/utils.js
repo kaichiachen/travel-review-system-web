@@ -90,16 +90,19 @@ export const findPost = (postBST, searchtime, searchString, tag) => {
   }
   postList.push(...findPost(postBST.right, searchtime, searchString, tag));
   /* eslint no-console: ["error", { allow: ["debug"] }] */
-  if (searchtime <= postBST.val.submittime && (searchString === '' || searchString === postBST.val.title || searchString === postBST.val.location)) {
-    for (let i = 0; i < postBST.val.tags.length; i += 1) {
-      if (tag === postBST.val.tags[i]) {
-        postList.push(postBST.val);
+  if (searchtime <= postBST.val.submittime && (searchString === '' || postBST.val.title.indexOf(searchString) !== -1 || searchString === postBST.val.location)) {
+    if (postBST.val.tags.length === 0 && tag === '') {
+      postList.push(postBST.val);
+    } else {
+      for (let i = 0; i < postBST.val.tags.length; i += 1) {
+        if (tag === postBST.val.tags[i] || tag === '') {
+          postList.push(postBST.val);
+          break;
+        }
       }
     }
   }
   postList.push(...findPost(postBST.left, searchtime, searchString, tag));
-  /* eslint no-console: ["error", { allow: ["debug"] }] */
-  console.debug(postBST);
   return postList;
 };
 
